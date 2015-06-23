@@ -1654,6 +1654,20 @@
 
   - [22.4](#22.4) <a name='22.4'></a> Use snake_case when naming object properties.
 
+    ```javascript
+    // bad
+    const panda = {
+      firstName: 'Mr.',
+      LastName: 'Panda'
+    }
+
+    // good
+    const panda = {
+      first_name: 'Mr.',
+      Last_name: 'Panda'
+    }
+    ```
+
   - [22.5](#22.5) <a name='22.5'></a> Use a leading underscore `_` when naming private properties.
 
     ```javascript
