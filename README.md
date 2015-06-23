@@ -91,13 +91,17 @@
     // bad
     var count = 1;
     if (true) {
+
       count += 1;
+
     }
 
     // good, use the let.
     let count = 1;
     if (true) {
+
       count += 1;
+
     }
     ```
 
@@ -170,7 +174,9 @@
     ```javascript
 
     function getKey(k) {
+
       return `a key named ${k}`;
+
     }
 
     // bad
@@ -320,21 +326,27 @@
     ```javascript
     // bad
     function getFullName(user) {
+
       const firstName = user.firstName;
       const lastName = user.lastName;
 
       return `${firstName} ${lastName}`;
+
     }
 
     // good
     function getFullName(obj) {
+
       const { firstName, lastName } = obj;
       return `${firstName} ${lastName}`;
+
     }
 
     // best
     function getFullName({ firstName, lastName }) {
+
       return `${firstName} ${lastName}`;
+
     }
     ```
 
@@ -360,6 +372,7 @@
     function processInput(input) {
       // then a miracle occurs
       return [left, right, top, bottom];
+
     }
 
     // the caller needs to think about the order of return data
@@ -369,6 +382,7 @@
     function processInput(input) {
       // then a miracle occurs
       return { left, right, top, bottom };
+
     }
 
     // the caller selects only the data they need
@@ -417,17 +431,23 @@
     ```javascript
     // bad
     function sayHi(name) {
+
       return 'How are you, ' + name + '?';
+
     }
 
     // bad
     function sayHi(name) {
+
       return ['How are you, ', name, '?'].join();
+
     }
 
     // good
     function sayHi(name) {
+
       return `How are you, ${name}?`;
+
     }
     ```
 
@@ -469,17 +489,25 @@
     ```javascript
     // bad
     if (currentUser) {
+
       function test() {
+
         console.log('Nope.');
+
       }
+
     }
 
     // good
     let test;
     if (currentUser) {
+
       test = () => {
+
         console.log('Yup.');
+
       };
+
     }
     ```
 
@@ -505,13 +533,17 @@
     ```javascript
     // bad
     function concatenateAll() {
+
       const args = Array.prototype.slice.call(arguments);
       return args.join('');
+
     }
 
     // good
     function concatenateAll(...args) {
+
       return args.join('');
+
     }
     ```
 
@@ -530,8 +562,11 @@
 
     // still bad
     function handleThings(opts) {
+
       if (opts === void 0) {
+
         opts = {};
+
       }
       // ...
     }
@@ -550,7 +585,9 @@
   var b = 1;
   // bad
   function count(a = b++) {
+
     console.log(a);
+
   }
   count();  // 1
   count();  // 2
@@ -572,12 +609,16 @@
     ```javascript
     // bad
     [1, 2, 3].map(function (x) {
+
       return x * x;
+
     });
 
     // good
     [1, 2, 3].map((x) => {
+
       return x * x;
+
     });
     ```
 
@@ -609,25 +650,36 @@
     ```javascript
     // bad
     function Queue(contents = []) {
+
       this._queue = [...contents];
+
     }
     Queue.prototype.pop = function() {
+
       const value = this._queue[0];
       this._queue.splice(0, 1);
       return value;
+
     }
 
 
     // good
     class Queue {
+
       constructor(contents = []) {
+
         this._queue = [...contents];
+
       }
+
       pop() {
+
         const value = this._queue[0];
         this._queue.splice(0, 1);
         return value;
+
       }
+
     }
     ```
 
@@ -639,18 +691,26 @@
     // bad
     const inherits = require('inherits');
     function PeekableQueue(contents) {
+
       Queue.apply(this, contents);
+
     }
     inherits(PeekableQueue, Queue);
     PeekableQueue.prototype.peek = function() {
+
       return this._queue[0];
+
     }
 
     // good
     class PeekableQueue extends Queue {
+
       peek() {
+
         return this._queue[0];
+
       }
+
     }
     ```
 
@@ -659,12 +719,16 @@
     ```javascript
     // bad
     Jedi.prototype.jump = function() {
+
       this.jumping = true;
       return true;
+
     };
 
     Jedi.prototype.setHeight = function(height) {
+
       this.height = height;
+
     };
 
     const luke = new Jedi();
@@ -673,15 +737,21 @@
 
     // good
     class Jedi {
+
       jump() {
+
         this.jumping = true;
         return this;
+
       }
 
       setHeight(height) {
+
         this.height = height;
         return this;
+
       }
+
     }
 
     const luke = new Jedi();
@@ -695,17 +765,25 @@
 
     ```javascript
     class Jedi {
+
       contructor(options = {}) {
+
         this.name = options.name || 'no name';
+
       }
 
       getName() {
+
         return this.name;
+
       }
 
       toString() {
+
         return `Jedi - ${this.getName()}`;
+
       }
+
     }
     ```
 
@@ -773,7 +851,9 @@
     // bad
     let sum = 0;
     for (let num of numbers) {
+
       sum += num;
+
     }
 
     sum === 15;
@@ -821,7 +901,9 @@
     };
 
     function getProp(prop) {
+
       return luke[prop];
+
     }
 
     const isJedi = getProp('jedi');
@@ -896,6 +978,7 @@
     ```javascript
     // good
     function() {
+
       test();
       console.log('doing stuff..');
 
@@ -904,35 +987,46 @@
       const name = getName();
 
       if (name === 'test') {
+
         return false;
+
       }
 
       return name;
+
     }
 
     // bad - unnessary function call
     function(hasName) {
+
       const name = getName();
 
       if (!hasName) {
+
         return false;
+
       }
 
       this.setFirstName(name);
 
       return true;
+
     }
 
     // good
     function(hasName) {
+
       if (!hasName) {
+
         return false;
+
       }
 
       const name = getName();
       this.setFirstName(name);
 
       return true;
+
     }
     ```
 
@@ -947,7 +1041,9 @@
     // we know this wouldn't work (assuming there
     // is no notDefined global variable)
     function example() {
+
       console.log(notDefined); // => throws a ReferenceError
+
     }
 
     // creating a variable declaration after you
@@ -955,24 +1051,30 @@
     // variable hoisting. Note: the assignment
     // value of `true` is not hoisted.
     function example() {
+
       console.log(declaredButNotAssigned); // => undefined
       var declaredButNotAssigned = true;
+
     }
 
     // The interpreter is hoisting the variable
     // declaration to the top of the scope,
     // which means our example could be rewritten as:
     function example() {
+
       let declaredButNotAssigned;
       console.log(declaredButNotAssigned); // => undefined
       declaredButNotAssigned = true;
+
     }
 
     // using const and let
     function example() {
+
       console.log(declaredButNotAssigned); // => throws a ReferenceError
       console.log(typeof declaredButNotAssigned); // => throws a ReferenceError
       const declaredButNotAssigned = true;
+
     }
     ```
 
@@ -980,13 +1082,17 @@
 
     ```javascript
     function example() {
+
       console.log(anonymous); // => undefined
 
       anonymous(); // => TypeError anonymous is not a function
 
       var anonymous = function() {
+
         console.log('anonymous function expression');
+
       };
+
     }
     ```
 
@@ -994,6 +1100,7 @@
 
     ```javascript
     function example() {
+
       console.log(named); // => undefined
 
       named(); // => TypeError named is not a function
@@ -1001,20 +1108,27 @@
       superPower(); // => ReferenceError superPower is not defined
 
       var named = function superPower() {
+
         console.log('Flying');
+
       };
+
     }
 
     // the same is true when the function name
     // is the same as the variable name.
     function example() {
+
       console.log(named); // => undefined
 
       named(); // => TypeError named is not a function
 
       var named = function named() {
+
         console.log('named');
+
       }
+
     }
     ```
 
@@ -1022,11 +1136,15 @@
 
     ```javascript
     function example() {
+
       superPower(); // => Flying
 
       function superPower() {
+
         console.log('Flying');
+
       }
+
     }
     ```
 
@@ -1089,15 +1207,17 @@
 
     ```javascript
     // bad
+    if (test) return false;
+
+    // good
     if (test)
       return false;
 
     // good
-    if (test) return false;
-
-    // good
     if (test) {
+
       return false;
+
     }
 
     // bad
@@ -1105,7 +1225,9 @@
 
     // good
     function() {
+
       return false;
+
     }
     ```
 
@@ -1151,6 +1273,7 @@
       // ...stuff...
 
       return element;
+
     }
 
     // good
@@ -1166,6 +1289,7 @@
       // ...stuff...
 
       return element;
+
     }
     ```
 
@@ -1181,21 +1305,25 @@
 
     // bad
     function getType() {
+
       console.log('fetching type...');
       // set the default type to 'no type'
       const type = this._type || 'no type';
 
       return type;
+
     }
 
     // good
     function getType() {
+
       console.log('fetching type...');
 
       // set the default type to 'no type'
       const type = this._type || 'no type';
 
       return type;
+
     }
     ```
 
@@ -1205,10 +1333,12 @@
 
     ```javascript
     class Calculator {
+
       constructor() {
         // FIXME: shouldn't use a global here
         total = 0;
       }
+
     }
     ```
 
@@ -1216,10 +1346,12 @@
 
     ```javascript
     class Calculator {
+
       constructor() {
         // TODO: total should be configurable by an options param
         this.total = 0;
       }
+
     }
     ```
 
@@ -1233,17 +1365,23 @@
     ```javascript
     // bad
     function() {
+
     ∙∙∙∙const name;
+
     }
 
     // bad
     function() {
+
     ∙const name;
+
     }
 
     // good
     function() {
+
     ∙∙const name;
+
     }
     ```
 
@@ -1252,12 +1390,16 @@
     ```javascript
     // bad
     function test(){
+
       console.log('test');
+
     }
 
     // good
     function test() {
+
       console.log('test');
+
     }
 
     // bad
@@ -1278,22 +1420,30 @@
     ```javascript
     // bad
     if(isJedi) {
+
       fight ();
+
     }
 
     // good
     if (isJedi) {
+
       fight();
+
     }
 
     // bad
     function fight () {
+
       console.log ('Swooosh!');
+
     }
 
     // good
     function fight() {
+
       console.log('Swooosh!');
+
     }
     ```
 
@@ -1371,18 +1521,50 @@
         .call(tron.led);
     ```
 
-  - [18.6](#18.6) <a name='18.6'></a> Leave a blank line after blocks and before the next statement.
+  - [18.6](#18.6) <a name='18.6'></a> Leave a blank line after the opening of a block and before the closing of a block
+
+  ```javascript
+  // bad
+  if (foo) {
+    return bar;
+  }
+
+  // good
+  if (foo) {
+
+    return bar;
+
+  }
+
+  // bad
+  const baz = function (foo) {
+    return bar;
+  }
+
+  // good
+  const baz = function (foo) {
+
+    return bar;
+
+  }
+  ```
+
+  - [18.7](#18.7) <a name='18.7'></a> Leave a blank line after blocks and before the next statement.
 
     ```javascript
     // bad
     if (foo) {
+
       return bar;
+
     }
     return baz;
 
     // good
     if (foo) {
+
       return bar;
+
     }
 
     return baz;
@@ -1500,20 +1682,26 @@
     ```javascript
     // bad
     (function() {
+
       const name = 'Skywalker'
       return name
+
     })()
 
     // good
     (() => {
+
       const name = 'Skywalker';
       return name;
+
     })();
 
     // good (guards against the function becoming an argument when two files with IIFEs are concatenated)
     ;(() => {
+
       const name = 'Skywalker';
       return name;
+
     })();
     ```
 
@@ -1633,7 +1821,9 @@
     ```javascript
     // bad
     function user(options) {
+
       this.name = options.name;
+
     }
 
     const bad = new user({
@@ -1642,9 +1832,13 @@
 
     // good
     class User {
+
       constructor(options) {
+
         this.name = options.name;
+
       }
+
     }
 
     const good = new User({
@@ -1684,25 +1878,35 @@
     ```javascript
     // bad
     function foo() {
+
       const self = this;
       return function() {
+
         console.log(self);
+
       };
+
     }
 
     // bad
     function foo() {
+
       const that = this;
       return function() {
+
         console.log(that);
+
       };
+
     }
 
     // good
     function foo() {
+
       return () => {
         console.log(this);
       };
+
     }
     ```
 
@@ -1786,18 +1990,26 @@
 
     ```javascript
     class Jedi {
+
       constructor(options = {}) {
+
         const lightsaber = options.lightsaber || 'blue';
         this.set('lightsaber', lightsaber);
+
       }
 
       set(key, val) {
+
         this[key] = val;
+
       }
 
       get(key) {
+
         return this[key];
+
       }
+
     }
     ```
 
@@ -1852,6 +2064,7 @@
     ```javascript
     // bad
     function setSidebar() {
+
       $('.sidebar').hide();
 
       // ...stuff...
@@ -1859,10 +2072,12 @@
       $('.sidebar').css({
         'background-color': 'pink'
       });
+
     }
 
     // good
     function setSidebar() {
+
       const $sidebar = $('.sidebar');
       $sidebar.hide();
 
@@ -1871,6 +2086,7 @@
       $sidebar.css({
         'background-color': 'pink'
       });
+
     }
     ```
 
