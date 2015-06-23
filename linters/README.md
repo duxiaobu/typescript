@@ -1,7 +1,5 @@
-## `.eslintrc`
+## `tslint.json`
 
-Our `.eslintrc` requires the following NPM packages packages:
+Our `tslint.json` requires the following NPM packages packages:
 
-- `eslint`
-- `babel-eslint`
-- `eslint-plugin-react`
+- `tslint`
