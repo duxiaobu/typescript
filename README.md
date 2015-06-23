@@ -29,7 +29,6 @@
   1. [jQuery](#jquery)
   1. [ECMAScript 5 Compatibility](#ecmascript-5-compatibility)
   1. [ECMAScript 6 Styles](#ecmascript-6-styles)
-  1. [Performance](#performance)
   1. [License](#license)
 
 ## Types
@@ -173,7 +172,7 @@
 
     ```javascript
 
-    function getKey(k) {
+    const getKey = function(k) {
 
       return `a key named ${k}`;
 
@@ -325,7 +324,7 @@
 
     ```javascript
     // bad
-    function getFullName(user) {
+    const getFullName = function(user) {
 
       const firstName = user.firstName;
       const lastName = user.lastName;
@@ -335,7 +334,7 @@
     }
 
     // good
-    function getFullName(obj) {
+    const getFullName = function(obj) {
 
       const { firstName, lastName } = obj;
       return `${firstName} ${lastName}`;
@@ -343,7 +342,7 @@
     }
 
     // best
-    function getFullName({ firstName, lastName }) {
+    const getFullName = function({ firstName, lastName }) {
 
       return `${firstName} ${lastName}`;
 
@@ -369,7 +368,7 @@
 
     ```javascript
     // bad
-    function processInput(input) {
+    const processInput = function(input) {
       // then a miracle occurs
       return [left, right, top, bottom];
 
@@ -379,7 +378,7 @@
     const [left, __, top] = processInput(input);
 
     // good
-    function processInput(input) {
+    const processInput = function(input) {
       // then a miracle occurs
       return { left, right, top, bottom };
 
@@ -430,21 +429,21 @@
 
     ```javascript
     // bad
-    function sayHi(name) {
+    const sayHi = function(name) {
 
       return 'How are you, ' + name + '?';
 
     }
 
     // bad
-    function sayHi(name) {
+    const sayHi = function(name) {
 
       return ['How are you, ', name, '?'].join();
 
     }
 
     // good
-    function sayHi(name) {
+    const sayHi = function(name) {
 
       return `How are you, ${name}?`;
 
@@ -465,8 +464,8 @@
     function foo() {
     }
 
-    // bad
-    const foo = function () {
+    // good
+    const foo = function() {
     };
 
     // good
@@ -490,7 +489,7 @@
     // bad
     if (currentUser) {
 
-      function test() {
+      const test = function() {
 
         console.log('Nope.');
 
@@ -515,12 +514,12 @@
 
     ```javascript
     // bad
-    function nope(name, options, arguments) {
+    const nope = function(name, options, arguments) {
       // ...stuff...
     }
 
     // good
-    function yup(name, options, args) {
+    const yup = function(name, options, args) {
       // ...stuff...
     }
     ```
@@ -532,7 +531,7 @@
 
     ```javascript
     // bad
-    function concatenateAll() {
+    const concatenateAll = function() {
 
       const args = Array.prototype.slice.call(arguments);
       return args.join('');
@@ -540,7 +539,7 @@
     }
 
     // good
-    function concatenateAll(...args) {
+    const concatenateAll = function(...args) {
 
       return args.join('');
 
@@ -552,7 +551,7 @@
 
     ```javascript
     // really bad
-    function handleThings(opts) {
+    const handleThings = function(opts) {
       // No! We shouldn't mutate function arguments.
       // Double bad: if opts is falsy it'll be set to an object which may
       // be what you want but it can introduce subtle bugs.
@@ -561,7 +560,7 @@
     }
 
     // still bad
-    function handleThings(opts) {
+    const handleThings = function(opts) {
 
       if (opts === void 0) {
 
@@ -572,7 +571,7 @@
     }
 
     // good
-    function handleThings(opts = {}) {
+    const handleThings = function(opts = {}) {
       // ...
     }
     ```
@@ -584,7 +583,7 @@
   ```javascript
   var b = 1;
   // bad
-  function count(a = b++) {
+  const count = function(a = b++) {
 
     console.log(a);
 
@@ -620,6 +619,9 @@
       return x * x;
 
     });
+
+    // good
+    [1, 2, 3].map((x) => x * x;);
     ```
 
   - [8.2](#8.2) <a name='8.2'></a> If the function body fits on one line and there is only a single argument, feel free to omit the braces and parentheses, and use the implicit return. Otherwise, add the parentheses, braces, and use a `return` statement.
@@ -900,7 +902,7 @@
       age: 28,
     };
 
-    function getProp(prop) {
+    const getProp = function(prop) {
 
       return luke[prop];
 
@@ -1268,7 +1270,7 @@
     //
     // @param {String} tag
     // @return {Element} element
-    function make(tag) {
+    const make = function(tag) {
 
       // ...stuff...
 
@@ -1284,7 +1286,7 @@
      * @param {String} tag
      * @return {Element} element
      */
-    function make(tag) {
+    const make = function(tag) {
 
       // ...stuff...
 
@@ -1304,7 +1306,7 @@
     const active = true;
 
     // bad
-    function getType() {
+    const getType = function() {
 
       console.log('fetching type...');
       // set the default type to 'no type'
@@ -1315,7 +1317,7 @@
     }
 
     // good
-    function getType() {
+    const getType = function() {
 
       console.log('fetching type...');
 
@@ -1389,14 +1391,14 @@
 
     ```javascript
     // bad
-    function test(){
+    const test = function(){
 
       console.log('test');
 
     }
 
     // good
-    function test() {
+    const test = function() {
 
       console.log('test');
 
@@ -1433,14 +1435,14 @@
     }
 
     // bad
-    function fight () {
+    const fight = function () {
 
       console.log ('Swooosh!');
 
     }
 
     // good
-    function fight() {
+    const fight = function() {
 
       console.log('Swooosh!');
 
@@ -1537,12 +1539,12 @@
   }
 
   // bad
-  const baz = function (foo) {
+  const baz = function(foo) {
     return bar;
   }
 
   // good
-  const baz = function (foo) {
+  const baz = function(foo) {
 
     return bar;
 
@@ -1809,11 +1811,11 @@
     // bad
     const OBJEcttsssss = {};
     const this_is_my_object = {};
-    function c() {}
+    const c = function() {}
 
     // good
     const thisIsMyObject = {};
-    function thisIsMyFunction() {}
+    const thisIsMyFunction = function() {}
     ```
 
   - [22.3](#22.3) <a name='22.3'></a> Use PascalCase when naming constructors, classes, modules, or interfaces.
@@ -2136,20 +2138,6 @@
 1. [Let and Const](#references)
 1. [Iterators and Generators](#iterators-and-generators)
 1. [Modules](#modules)
-
-**[⬆ back to top](#table-of-contents)**
-
-
-## Performance
-
-  - [On Layout & Web Performance](http://kellegous.com/j/2013/01/26/layout-performance/)
-  - [String vs Array Concat](http://jsperf.com/string-vs-array-concat/2)
-  - [Try/Catch Cost In a Loop](http://jsperf.com/try-catch-in-loop-cost)
-  - [Bang Function](http://jsperf.com/bang-function)
-  - [jQuery Find vs Context, Selector](http://jsperf.com/jquery-find-vs-context-sel/13)
-  - [innerHTML vs textContent for script text](http://jsperf.com/innerhtml-vs-textcontent-for-script-text)
-  - [Long String Concatenation](http://jsperf.com/ya-string-concat)
-  - Loading...
 
 **[⬆ back to top](#table-of-contents)**
 
