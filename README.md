@@ -194,14 +194,21 @@
     ```
 
   <a name="es6-object-shorthand"></a>
-  - [3.5](#3.5) <a name='3.5'></a> Use object method shorthand.
+  - [3.5](#3.5) <a name='3.5'></a> Use arrow functions for object methods instead of object method shorthand or an anonymous function.
 
     ```javascript
     // bad
     const atom = {
       value: 1,
-
       addValue: function (value) {
+        return atom.value + value;
+      },
+    };
+
+    // bad
+    const atom = {
+      value: 1,
+      addValue(value) {
         return atom.value + value;
       },
     };
@@ -209,10 +216,7 @@
     // good
     const atom = {
       value: 1,
-
-      addValue(value) {
-        return atom.value + value;
-      },
+      addValue: (value) => atom.value + value
     };
     ```
 
