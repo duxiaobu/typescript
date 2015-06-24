@@ -1,5 +1,7 @@
 # Excel Micro TypeScript Style Guide
 
+*A mostly reasonable approach to TypeScript based off of [Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript)*
+
 ## Table of Contents
 
   1. [Types](#types)
@@ -27,8 +29,12 @@
   1. [Accessors](#accessors)
   1. [Events](#events)
   1. [jQuery](#jquery)
+  1. [Type Annotations](#type-annotations)
+  1. [Interfaces](#interfaces)
+  1. [Organization](#organization)
   1. [ECMAScript 5 Compatibility](#ecmascript-5-compatibility)
   1. [ECMAScript 6 Styles](#ecmascript-6-styles)
+  1. [Typescript 1.5 Styles](#typescript-1.5-styles)
   1. [License](#license)
 
 ## Types
@@ -792,6 +798,9 @@
 
     }
     ```
+
+<a name="ts-classes"></a>
+  - [9.5](#9.5) <a name='9.5'></a> Typescript classes placeholder.
 
 **[⬆ back to top](#table-of-contents)**
 
@@ -2119,15 +2128,42 @@
 **[⬆ back to top](#table-of-contents)**
 
 
+## Type Annotations
+
+<a name="ts-type-annotations"></a>
+  - [26.1](#26.1) <a name='26.1'></a> Type annotations placeholder.
+
+<a name="ts-generics"></a>
+  - [26.x](#26.x) <a name='26.x'></a> Generics placeholder.
+
+**[⬆ back to top](#table-of-contents)**
+
+
+## Interfaces
+
+<a name="ts-interfaces"></a>
+  - [27.1](#27.1) <a name='27.1'></a> Interface placeholder.
+
+**[⬆ back to top](#table-of-contents)**
+
+
+## Organization
+
+<a name="ts-modules"></a>
+  - [28.1](#28.1) <a name='28.1'></a> Organization/module placeholder.
+
+**[⬆ back to top](#table-of-contents)**
+
+
 ## ECMAScript 5 Compatibility
 
-  - [26.1](#26.1) <a name='26.1'></a> Refer to [Kangax](https://twitter.com/kangax/)'s ES5 [compatibility table](http://kangax.github.com/es5-compat-table/).
+  - [29.1](#29.1) <a name='29.1'></a> Refer to [Kangax](https://twitter.com/kangax/)'s ES5 [compatibility table](http://kangax.github.com/es5-compat-table/).
 
 **[⬆ back to top](#table-of-contents)**
 
 ## ECMAScript 6 Styles
 
-  - [27.1](#27.1) <a name='27.1'></a> This is a collection of links to the various es6 features.
+  - [30.1](#30.1) <a name='30.1'></a> This is a collection of links to the various es6 features.
 
 1. [Arrow Functions](#arrow-functions)
 1. [Classes](#constructors)
@@ -2142,6 +2178,18 @@
 1. [Let and Const](#references)
 1. [Iterators and Generators](#iterators-and-generators)
 1. [Modules](#modules)
+
+**[⬆ back to top](#table-of-contents)**
+
+## Typescript 1.5 Styles
+
+  - [31.1](#31.1) <a name='31.1'></a> This is a collection of links to the various es6 features.
+
+1. [Type Annotations](#ts-type-annotations)
+1. [Interfaces](#ts-interfaces)
+1. [Classes](#ts-classes)
+1. [Modules](#ts-modules)
+1. [Generics](#ts-generics)
 
 **[⬆ back to top](#table-of-contents)**
 
