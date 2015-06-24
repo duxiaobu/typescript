@@ -2150,7 +2150,45 @@
 ## Organization
 
 <a name="ts-modules"></a>
-  - [28.1](#28.1) <a name='28.1'></a> Organization/module placeholder.
+  - [28.1](#28.1) <a name='28.1'></a> Organize your code into modules. 
+
+  ```javascript
+  module Automobile {
+
+    module Honda {
+
+    }
+
+  }
+  ```
+  
+  - [28.2](#28.2) <a name='28.2'></a> Export one main module so it can be required by other files.
+
+  ```javascript
+  module Automobile {
+
+    // hidden module, will not be accessible via "require"
+    Honda {
+
+    }
+  
+    // public module, will be accessible via "require"
+    export Ford {
+
+      export function vroom() {
+
+        console.log('vroom!');
+
+      }
+
+    }
+
+  }
+
+  export = Automobile;
+  ```
+
+- [28.3](#28.3) <a name='28.3'></a> Modules should be Pascal case.
 
 **[⬆ back to top](#table-of-contents)**
 
