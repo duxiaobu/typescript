@@ -200,7 +200,7 @@
     ```
 
   <a name="es6-object-shorthand"></a>
-  - [3.5](#3.5) <a name='3.5'></a> Use arrow functions for object methods instead of object method shorthand or an anonymous function.
+  - [3.5](#3.5) <a name='3.5'></a> Use arrow functions for object methods instead of shorthand properties or an anonymous function.
 
     ```javascript
     // bad
@@ -825,19 +825,7 @@
     export default es6;
     ```
 
-  - [10.2](#10.2) <a name='10.2'></a> Do not use wildcard imports.
-
-  > Why? This makes sure you have a single default export.
-
-    ```javascript
-    // bad
-    import * as AirbnbStyleGuide from './AirbnbStyleGuide';
-
-    // good
-    import AirbnbStyleGuide from './AirbnbStyleGuide';
-    ```
-
-  - [10.3](#10.3) <a name='10.3'></a>And do not export directly from an import.
+  - [10.2](#10.2) <a name='10.2'></a>And do not export directly from an import.
 
   > Why? Although the one-liner is concise, having one clear way to import and one clear way to export makes things consistent.
 
@@ -852,9 +840,9 @@
     export default es6;
     ```
 
-  - [10.4](#10.4) <a name='10.4'></a>Use TypeScript module import for non-ES6 libraries with type definitions. Check [DefinitelyTyped](https://github.com/borisyankov/DefinitelyTyped) for available type definition files.
+  - [10.3](#10.3) <a name='10.3'></a>Use TypeScript module import for non-ES6 libraries with type definitions. Check [DefinitelyTyped](https://github.com/borisyankov/DefinitelyTyped) for available type definition files.
 
-  > Why? This provides type information from external mo
+  > Why? This provides type information from external modules when available
 
     ```javascript
     // bad
@@ -864,6 +852,39 @@
     // good
     /// <reference path="lodash/lodash.d.ts" />
     import lodash = require('lodash')
+    ```
+
+  - [10.4](#10.4) <a name='10.4'></a>Group module imports by type and then alphabetic by variable name. Follow these rules for ordering your module imports:
+    + External libraries with type definitions
+    + Internal typescript modules with wildcard imports
+    + External typescript modules without imports
+    + Internal libraries without type definitions
+
+
+  > Why? This makes your import section consistent across all modules.
+
+    ```javascript
+    // bad
+    /// <reference path="../typings/tsd.d.ts" />
+    import * as Api from './api';
+    import _ = require('lodash');
+    var Distillery = require('distillery-js');
+    import Partner from './partner';
+    import * as Util from './util';
+    import Q = require('Q');
+    var request = require('request');
+    import Customer from './customer';
+
+    // good
+    /// <reference path="../typings/tsd.d.ts" />
+    import _ = require('lodash');
+    import Q = require('Q');
+    import * as Api from './api';
+    import * as Util from './util';
+    import Customer from './customer';
+    import Partner from './partner';
+    var Distillery = require('distillery-js');
+    var request = require('request');
     ```
 
 **[⬆ back to top](#table-of-contents)**
