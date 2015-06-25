@@ -857,8 +857,8 @@
   - [10.4](#10.4) <a name='10.4'></a>Group module imports by type and then alphabetic by variable name. Follow these rules for ordering your module imports:
     + External libraries with type definitions
     + Internal typescript modules with wildcard imports
-    + External typescript modules without imports
-    + Internal libraries without type definitions
+    + Internal typescript modules without wildcard imports
+    + External libraries without type definitions
 
 
   > Why? This makes your import section consistent across all modules.
