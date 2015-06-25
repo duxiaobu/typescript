@@ -807,7 +807,7 @@
 
 ## Modules
 
-  - [10.1](#10.1) <a name='10.1'></a> Always use modules (`import`/`export`) over a non-standard module system. You can always transpile to your preferred module system.
+  - [10.1](#10.1) <a name='10.1'></a> Use modules (`import`/`export`) over a non-standard module system.
 
   > Why? Modules are the future, let's start using the future now.
 
@@ -850,6 +850,20 @@
     // filename es6.js
     import { es6 } from './AirbnbStyleGuide';
     export default es6;
+    ```
+
+  - [10.4](#10.4) <a name='10.4'></a>Use TypeScript module import for non-ES6 libraries with type definitions. Check [DefinitelyTyped](https://github.com/borisyankov/DefinitelyTyped) for available type definition files.
+
+  > Why? This provides type information from external mo
+
+    ```javascript
+    // bad
+    /// <reference path="lodash/lodash.d.ts" />
+    var lodash = require('lodash')
+
+    // good
+    /// <reference path="lodash/lodash.d.ts" />
+    import lodash = require('lodash')
     ```
 
 **[⬆ back to top](#table-of-contents)**
