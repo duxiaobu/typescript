@@ -2134,7 +2134,45 @@
   - [26.1](#26.1) <a name='26.1'></a> Type annotations placeholder.
 
 <a name="ts-generics"></a>
-  - [26.x](#26.x) <a name='26.x'></a> Generics placeholder.
+  - [26.x](#26.x) <a name='26.x'></a> Use "T" for the type variable if only one is needed.
+
+```javascript
+function identify<T>(arg: T): T {
+
+    return arg;
+    
+}
+```
+
+  - [26.x](#26.x) <a name='26.x'></a> If more than one type variable is required, start with letter "T" and name your variable in alphabetical sequence.
+
+```javascript
+function find<T, U extends Findable>(needle: T, haystack: U): U {
+
+  return haystack.find(needle)
+
+}
+```
+
+  - [26.x](#26.x) <a name='26.x'></a> When possible, allow the compiler to infer type of variables.
+
+```javascript
+// bad
+const output = identify<string>("myString");
+
+// good
+const output = identity("myString");
+```
+
+  - [26.x](#26.x) <a name='26.x'></a> When creating factories using generics, be sure to include the constructor function in the type.
+
+```javascript
+function create<t>(thing: {new(): T;}): T {
+
+  return new thing();
+
+}
+```
 
 **[⬆ back to top](#table-of-contents)**
 
@@ -2150,7 +2188,7 @@
 ## Organization
 
 <a name="ts-modules"></a>
-  - [28.1](#28.1) <a name='28.1'></a> Organize your code into modules. 
+  - [28.1](#28.1) <a name='28.1'></a> 1 file per logical component, and each file should be divided into logical divisions via modules. 
 
   ```javascript
   module Automobile {
@@ -2162,7 +2200,7 @@
   }
   ```
   
-  - [28.2](#28.2) <a name='28.2'></a> Export one main module so it can be required by other files.
+  - [28.2](#28.2) <a name='28.2'></a> Export one main module per file so it can be required by other files.
 
   ```javascript
   module Automobile {
@@ -2185,7 +2223,7 @@
 
   }
 
-  export = Automobile;
+  export default Automobile;
   ```
 
 - [28.3](#28.3) <a name='28.3'></a> Modules should be Pascal case.
