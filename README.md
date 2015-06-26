@@ -2138,7 +2138,7 @@
   - [26.1](#26.1) <a name='26.1'></a> Type annotations placeholder.
 
 <a name="ts-generics"></a>
-  - [26.2](#26.2) <a name='26.x'></a> Use "T" for the type variable if only one is needed.
+  - [26.2](#26.2) <a name='26.2'></a> Use "T" for the type variable if only one is needed.
 
 ```javascript
 function identify<T>(arg: T): T {
@@ -2148,7 +2148,7 @@ function identify<T>(arg: T): T {
 }
 ```
 
-  - [26.3](#26.3) <a name='26.x'></a> If more than one type variable is required, start with letter "T" and name your variable in alphabetical sequence.
+  - [26.3](#26.3) <a name='26.3'></a> If more than one type variable is required, start with letter "T" and name your variable in alphabetical sequence.
 
 ```javascript
 function find<T, U extends Findable>(needle: T, haystack: U): U {
@@ -2158,7 +2158,7 @@ function find<T, U extends Findable>(needle: T, haystack: U): U {
 }
 ```
 
-  - [26.4](#26.4) <a name='26.x'></a> When possible, allow the compiler to infer type of variables.
+  - [26.4](#26.4) <a name='26.4'></a> When possible, allow the compiler to infer type of variables.
 
 ```javascript
 // bad
@@ -2168,7 +2168,7 @@ const output = identify<string>("myString");
 const output = identity("myString");
 ```
 
-  - [26.5](#26.5) <a name='26.x'></a> When creating factories using generics, be sure to include the constructor function in the type.
+  - [26.5](#26.5) <a name='26.5'></a> When creating factories using generics, be sure to include the constructor function in the type.
 
 ```javascript
 function create<t>(thing: {new(): T;}): T {
