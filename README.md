@@ -1253,13 +1253,13 @@
 
 ## Blocks
 
-  - [16.1](#16.1) <a name='16.1'></a> Use braces with all multi-line blocks.
+  - [16.1](#16.1) <a name='16.1'></a> Use braces with multi-line blocks or omit braces for two line blocks.
 
     ```javascript
     // bad
     if (test) return false;
 
-    // good
+    // ok
     if (test)
       return false;
 
@@ -1302,6 +1302,27 @@
       thing3();
     }
     ```
+
+    - [16.3](#16.3) <a name='16.3'></a> If you're using multi-line blocks with `if` and `else`, do not omit curly braces.
+
+    > Why? Omitting curly braces in multi-line blocks can easily cause unexpected behavior.
+
+      ```javascript
+      // bad
+      if (test)
+        thing1();
+        thing2();
+      else
+        thing3();
+
+      // good
+      if (test) {
+        thing1();
+        thing2();
+      } else {
+        thing3();
+      }
+      ```
 
 
 **[⬆ back to top](#table-of-contents)**
