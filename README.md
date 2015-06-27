@@ -1902,17 +1902,21 @@
     });
 
     // good
-    class User {
+    module AperatureScience {
 
-      constructor(options) {
+      class User {
 
-        this.name = options.name;
+        constructor(options) {
+
+          this.name = options.name;
+
+        }
 
       }
 
     }
 
-    const good = new User({
+    const good = new AperatureScience.User({
       name: 'yup',
     });
     ```
@@ -2190,7 +2194,45 @@
   - [26.1](#26.1) <a name='26.1'></a> Type annotations placeholder.
 
 <a name="ts-generics"></a>
-  - [26.x](#26.x) <a name='26.x'></a> Generics placeholder.
+  - [26.2](#26.2) <a name='26.2'></a> Use "T" for the type variable if only one is needed.
+
+```javascript
+function identify<T>(arg: T): T {
+
+    return arg;
+    
+}
+```
+
+  - [26.3](#26.3) <a name='26.3'></a> If more than one type variable is required, start with letter "T" and name your variable in alphabetical sequence.
+
+```javascript
+function find<T, U extends Findable>(needle: T, haystack: U): U {
+
+  return haystack.find(needle)
+
+}
+```
+
+  - [26.4](#26.4) <a name='26.4'></a> When possible, allow the compiler to infer type of variables.
+
+```javascript
+// bad
+const output = identify<string>("myString");
+
+// good
+const output = identity("myString");
+```
+
+  - [26.5](#26.5) <a name='26.5'></a> When creating factories using generics, be sure to include the constructor function in the type.
+
+```javascript
+function create<t>(thing: {new(): T;}): T {
+
+  return new thing();
+
+}
+```
 
 **[⬆ back to top](#table-of-contents)**
 
@@ -2206,7 +2248,59 @@
 ## Organization
 
 <a name="ts-modules"></a>
-  - [28.1](#28.1) <a name='28.1'></a> Organization/module placeholder.
+  - [28.1](#28.1) <a name='28.1'></a> 1 file per logical component, and each file should be divided into logical divisions via modules. 
+
+  ```javascript
+  module Automobile {
+
+    module Honda {
+
+    }
+
+  }
+  ```
+  
+  - [28.2](#28.2) <a name='28.2'></a> Export one main module per file so it can be required by other files.
+
+  ```javascript
+  module Automobile {
+
+    // hidden module, will not be accessible via "require"
+    Honda {
+
+    }
+  
+    // public module, will be accessible via "require"
+    export Ford {
+
+      export function vroom() {
+
+        console.log('vroom!');
+
+      }
+
+    }
+
+  }
+
+  export default Automobile;
+  ```
+
+- [28.3](#28.3) <a name='28.3'></a> Order your code (alphabetically) in the following order within each module:
+   - var
+   - export var
+   - let
+   - export let
+   - const
+   - export const
+   - interface
+   - export interface
+   - function
+   - export function
+   - class
+   - export class
+   - module
+   - export module
 
 **[⬆ back to top](#table-of-contents)**
 
