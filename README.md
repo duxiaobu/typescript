@@ -1,2371 +1,1932 @@
-# Excel Micro TypeScript Style Guide
-
-*A mostly reasonable approach to TypeScript based off of [Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript)*
-
-## Table of Contents
-
-  1. [Types](#types)
-  1. [References](#references)
-  1. [Objects](#objects)
-  1. [Arrays](#arrays)
-  1. [Destructuring](#destructuring)
-  1. [Strings](#strings)
-  1. [Functions](#functions)
-  1. [Arrow Functions](#arrow-functions)
-  1. [Constructors](#constructors)
-  1. [Modules](#modules)
-  1. [Iterators and Generators](#iterators-and-generators)
-  1. [Properties](#properties)
-  1. [Variables](#variables)
-  1. [Hoisting](#hoisting)
-  1. [Comparison Operators & Equality](#comparison-operators--equality)
-  1. [Blocks](#blocks)
-  1. [Comments](#comments)
-  1. [Whitespace](#whitespace)
-  1. [Commas](#commas)
-  1. [Semicolons](#semicolons)
-  1. [Type Casting & Coercion](#type-casting--coercion)
-  1. [Naming Conventions](#naming-conventions)
-  1. [Accessors](#accessors)
-  1. [Events](#events)
-  1. [jQuery](#jquery)
-  1. [Type Annotations](#type-annotations)
-  1. [Interfaces](#interfaces)
-  1. [Organization](#organization)
-  1. [ECMAScript 5 Compatibility](#ecmascript-5-compatibility)
-  1. [ECMAScript 6 Styles](#ecmascript-6-styles)
-  1. [Typescript 1.5 Styles](#typescript-1.5-styles)
-  1. [License](#license)
-
-## Types
-
-  - [1.1](#1.1) <a name='1.1'></a> **Primitives**: When you access a primitive type you work directly on its value.
-
-    + `string`
-    + `number`
-    + `boolean`
-    + `null`
-    + `undefined`
-
-    ```javascript
-    const foo = 1;
-    let bar = foo;
-
-    bar = 9;
-
-    console.log(foo, bar); // => 1, 9
-    ```
-  - [1.2](#1.2) <a name='1.2'></a> **Complex**: When you access a complex type you work on a reference to its value.
-
-    + `object`
-    + `array`
-    + `function`
-
-    ```javascript
-    const foo = [1, 2];
-    const bar = foo;
-
-    bar[0] = 9;
-
-    console.log(foo[0], bar[0]); // => 9, 9
-    ```
-
-**[⬆ back to top](#table-of-contents)**
-
-## References
-
-  - [2.1](#2.1) <a name='2.1'></a> Use `const` for all of your references; avoid using `var`.
-
-  > Why? This ensures that you can't reassign your references (mutation), which can lead to bugs and difficult to comprehend code.
-
-    ```javascript
-    // bad
-    var a = 1;
-    var b = 2;
-
-    // good
-    const a = 1;
-    const b = 2;
-    ```
-
-  - [2.2](#2.2) <a name='2.2'></a> If you must mutate references, use `let` instead of `var`.
-
-  > Why? `let` is block-scoped rather than function-scoped like `var`.
-
-    ```javascript
-    // bad
-    var count = 1;
-    if (true) {
-
-      count += 1;
-
-    }
-
-    // good, use the let.
-    let count = 1;
-    if (true) {
-
-      count += 1;
-
-    }
-    ```
-
-  - [2.3](#2.3) <a name='2.3'></a> Note that both `let` and `const` are block-scoped.
-
-    ```javascript
-    // const and let only exist in the blocks they are defined in.
-    {
-      let a = 1;
-      const b = 1;
-    }
-    console.log(a); // ReferenceError
-    console.log(b); // ReferenceError
-    ```
-
-**[⬆ back to top](#table-of-contents)**
-
-## Objects
-
-  - [3.1](#3.1) <a name='3.1'></a> Use the literal syntax for object creation.
-
-    ```javascript
-    // bad
-    const item = new Object();
-
-    // good
-    const item = {};
-    ```
-
-  - [3.2](#3.2) <a name='3.2'></a> Don't use [reserved words](http://es5.github.io/#x7.6.1) as keys. It won't work in IE8. [More info](https://github.com/airbnb/javascript/issues/61).
-
-    ```javascript
-    // bad
-    const superman = {
-      default: { clark: 'kent' },
-      private: true,
-    };
-
-    // good
-    const superman = {
-      defaults: { clark: 'kent' },
-      hidden: true,
-    };
-    ```
-
-  - [3.3](#3.3) <a name='3.3'></a> Use readable synonyms in place of reserved words.
-
-    ```javascript
-    // bad
-    const superman = {
-      class: 'alien',
-    };
-
-    // bad
-    const superman = {
-      klass: 'alien',
-    };
-
-    // good
-    const superman = {
-      type: 'alien',
-    };
-    ```
-
-  <a name="es6-computed-properties"></a>
-  - [3.4](#3.4) <a name='3.4'></a> Use computed property names when creating objects with dynamic property names.
-
-  > Why? They allow you to define all the properties of an object in one place.
-
-    ```javascript
-
-    const getKey = function(k) {
-
-      return `a key named ${k}`;
-
-    }
-
-    // bad
-    const obj = {
-      id: 5,
-      name: 'San Francisco',
-    };
-    obj[getKey('enabled')] = true;
-
-    // good
-    const obj = {
-      id: 5,
-      name: 'San Francisco',
-      [getKey('enabled')]: true,
-    };
-    ```
-
-  <a name="es6-object-shorthand"></a>
-  - [3.5](#3.5) <a name='3.5'></a> Use arrow functions for object methods instead of shorthand properties or an anonymous function.
-
-    ```javascript
-    // bad
-    const atom = {
-      value: 1,
-      addValue: function (value) {
-        return atom.value + value;
-      },
-    };
-
-    // bad
-    const atom = {
-      value: 1,
-      addValue(value) {
-        return atom.value + value;
-      },
-    };
-
-    // good
-    const atom = {
-      value: 1,
-      addValue: (value) => atom.value + value
-    };
-    ```
-
-  <a name="es6-object-concise"></a>
-  - [3.6](#3.6) <a name='3.6'></a> Use property value shorthand.
-
-  > Why? It is shorter to write and descriptive.
-
-    ```javascript
-    const lukeSkywalker = 'Luke Skywalker';
-
-    // bad
-    const obj = {
-      lukeSkywalker: lukeSkywalker,
-    };
-
-    // good
-    const obj = {
-      lukeSkywalker,
-    };
-    ```
-
-  - [3.7](#3.7) <a name='3.7'></a> Group your shorthand properties at the beginning of your object declaration.
-
-  > Why? It's easier to tell which properties are using the shorthand.
-
-    ```javascript
-    const anakinSkywalker = 'Anakin Skywalker';
-    const lukeSkywalker = 'Luke Skywalker';
-
-    // bad
-    const obj = {
-      episodeOne: 1,
-      twoJedisWalkIntoACantina: 2,
-      lukeSkywalker,
-      episodeThree: 3,
-      mayTheFourth: 4,
-      anakinSkywalker,
-    };
-
-    // good
-    const obj = {
-      lukeSkywalker,
-      anakinSkywalker,
-      episodeOne: 1,
-      twoJedisWalkIntoACantina: 2,
-      episodeThree: 3,
-      mayTheFourth: 4,
-    };
-    ```
-
-**[⬆ back to top](#table-of-contents)**
-
-## Arrays
-
-  - [4.1](#4.1) <a name='4.1'></a> Use the literal syntax for array creation.
-
-    ```javascript
-    // bad
-    const items = new Array();
-
-    // good
-    const items = [];
-    ```
-
-  - [4.2](#4.2) <a name='4.2'></a> Use Array#push instead of direct assignment to add items to an array.
-
-    ```javascript
-    const someStack = [];
-
-
-    // bad
-    someStack[someStack.length] = 'abracadabra';
-
-    // good
-    someStack.push('abracadabra');
-    ```
-
-  <a name="es6-array-spreads"></a>
-  - [4.3](#4.3) <a name='4.3'></a> Use array spreads `...` to copy arrays.
-
-    ```javascript
-    // bad
-    const len = items.length;
-    const itemsCopy = [];
-    let i;
-
-    for (i = 0; i < len; i++) {
-      itemsCopy[i] = items[i];
-    }
-
-    // good
-    const itemsCopy = [...items];
-    ```
-  - [4.4](#4.4) <a name='4.4'></a> To convert an array-like object to an array, use Array#from.
-
-    ```javascript
-    const foo = document.querySelectorAll('.foo');
-    const nodes = Array.from(foo);
-    ```
-
-**[⬆ back to top](#table-of-contents)**
-
-## Destructuring
-
-  - [5.1](#5.1) <a name='5.1'></a> Use object destructuring when accessing and using multiple properties of an object.
-
-  > Why? Destructuring saves you from creating temporary references for those properties.
-
-    ```javascript
-    // bad
-    const getFullName = function(user) {
-
-      const firstName = user.firstName;
-      const lastName = user.lastName;
-
-      return `${firstName} ${lastName}`;
-
-    }
-
-    // good
-    const getFullName = function(obj) {
-
-      const { firstName, lastName } = obj;
-      return `${firstName} ${lastName}`;
-
-    }
-
-    // best
-    const getFullName = function({ firstName, lastName }) {
-
-      return `${firstName} ${lastName}`;
-
-    }
-    ```
-
-  - [5.2](#5.2) <a name='5.2'></a> Use array destructuring.
-
-    ```javascript
-    const arr = [1, 2, 3, 4];
-
-    // bad
-    const first = arr[0];
-    const second = arr[1];
-
-    // good
-    const [first, second] = arr;
-    ```
-
-  - [5.3](#5.3) <a name='5.3'></a> Use object destructuring for multiple return values, not array destructuring.
-
-  > Why? You can add new properties over time or change the order of things without breaking call sites.
-
-    ```javascript
-    // bad
-    const processInput = function(input) {
-      // then a miracle occurs
-      return [left, right, top, bottom];
-
-    }
-
-    // the caller needs to think about the order of return data
-    const [left, __, top] = processInput(input);
-
-    // good
-    const processInput = function(input) {
-      // then a miracle occurs
-      return { left, right, top, bottom };
-
-    }
-
-    // the caller selects only the data they need
-    const { left, right } = processInput(input);
-    ```
-
-
-**[⬆ back to top](#table-of-contents)**
-
-## Strings
-
-  - [6.1](#6.1) <a name='6.1'></a> Use single quotes `''` for strings.
-
-    ```javascript
-    // bad
-    const name = "Capt. Janeway";
-
-    // good
-    const name = 'Capt. Janeway';
-    ```
-
-  - [6.2](#6.2) <a name='6.2'></a> Strings longer than 80 characters should be written across multiple lines using string concatenation.
-  - [6.3](#6.3) <a name='6.3'></a> Note: If overused, long strings with concatenation could impact performance. [jsPerf](http://jsperf.com/ya-string-concat) & [Discussion](https://github.com/airbnb/javascript/issues/40).
-
-    ```javascript
-    // bad
-    const errorMessage = 'This is a super long error that was thrown because of Batman. When you stop to think about how Batman had anything to do with this, you would get nowhere fast.';
-
-    // bad
-    const errorMessage = 'This is a super long error that was thrown because \
-    of Batman. When you stop to think about how Batman had anything to do \
-    with this, you would get nowhere \
-    fast.';
-
-    // good
-    const errorMessage = 'This is a super long error that was thrown because ' +
-      'of Batman. When you stop to think about how Batman had anything to do ' +
-      'with this, you would get nowhere fast.';
-    ```
-
-  <a name="es6-template-literals"></a>
-  - [6.4](#6.4) <a name='6.4'></a> When programmatically building up strings, use template strings instead of concatenation.
-
-  > Why? Template strings give you a readable, concise syntax with proper newlines and string interpolation features.
-
-    ```javascript
-    // bad
-    const sayHi = function(name) {
-
-      return 'How are you, ' + name + '?';
-
-    }
-
-    // bad
-    const sayHi = function(name) {
-
-      return ['How are you, ', name, '?'].join();
-
-    }
-
-    // good
-    const sayHi = function(name) {
-
-      return `How are you, ${name}?`;
-
-    }
-    ```
-
-**[⬆ back to top](#table-of-contents)**
-
-
-## Functions
-
-  - [7.1](#7.1) <a name='7.1'></a> Use function expressions instead of function declarations.
-
-  > Why? Badly placed Function Declarations are misleading and there are few (if any) situations where you can’t use a Function Expression assigned to a variable instead. See [function-declarations-vs-function-expressions](https://javascriptweblog.wordpress.com/2010/07/06/function-declarations-vs-function-expressions/).
-
-    ```javascript
-    // bad
-    function foo() {
-    }
-
-    // good
-    const foo = function() {
-    };
-
-    // good
-    const foo = () => {
-    };
-    ```
-
-  - [7.2](#7.2) <a name='7.2'></a> Function expressions:
-
-    ```javascript
-    // immediately-invoked function expression (IIFE)
-    (() => {
-      console.log('Welcome to the Internet. Please follow me.');
-    })();
-    ```
-
-  - [7.3](#7.3) <a name='7.3'></a> Never declare a function in a non-function block (if, while, etc). Assign the function to a variable instead. Browsers will allow you to do it, but they all interpret it differently, which is bad news bears.
-  - [7.4](#7.4) <a name='7.4'></a> **Note:** ECMA-262 defines a `block` as a list of statements. A function declaration is not a statement. [Read ECMA-262's note on this issue](http://www.ecma-international.org/publications/files/ECMA-ST/Ecma-262.pdf#page=97).
-
-    ```javascript
-    // bad
-    if (currentUser) {
-
-      const test = function() {
-
-        console.log('Nope.');
-
-      }
-
-    }
-
-    // good
-    let test;
-    if (currentUser) {
-
-      test = () => {
-
-        console.log('Yup.');
-
-      };
-
-    }
-    ```
-
-  - [7.5](#7.5) <a name='7.5'></a> Never name a parameter `arguments`. This will take precedence over the `arguments` object that is given to every function scope.
-
-    ```javascript
-    // bad
-    const nope = function(name, options, arguments) {
-      // ...stuff...
-    }
-
-    // good
-    const yup = function(name, options, args) {
-      // ...stuff...
-    }
-    ```
-
-  <a name="es6-rest"></a>
-  - [7.6](#7.6) <a name='7.6'></a> Never use `arguments`, opt to use rest syntax `...` instead.
-
-  > Why? `...` is explicit about which arguments you want pulled. Plus rest arguments are a real Array and not Array-like like `arguments`.
-
-    ```javascript
-    // bad
-    const concatenateAll = function() {
-
-      const args = Array.prototype.slice.call(arguments);
-      return args.join('');
-
-    }
-
-    // good
-    const concatenateAll = function(...args) {
-
-      return args.join('');
-
-    }
-    ```
-
-  <a name="es6-default-parameters"></a>
-  - [7.7](#7.7) <a name='7.7'></a> Use default parameter syntax rather than mutating function arguments.
-
-    ```javascript
-    // really bad
-    const handleThings = function(opts) {
-      // No! We shouldn't mutate function arguments.
-      // Double bad: if opts is falsy it'll be set to an object which may
-      // be what you want but it can introduce subtle bugs.
-      opts = opts || {};
-      // ...
-    }
-
-    // still bad
-    const handleThings = function(opts) {
-
-      if (opts === void 0) {
-
-        opts = {};
-
-      }
-      // ...
-    }
-
-    // good
-    const handleThings = function(opts = {}) {
-      // ...
-    }
-    ```
-
-  - [7.8](#7.8) <a name='7.8'></a> Avoid side effects with default parameters
-
-  > Why? They are confusing to reason about.
-
-  ```javascript
-  var b = 1;
-  // bad
-  const count = function(a = b++) {
-
-    console.log(a);
-
-  }
-  count();  // 1
-  count();  // 2
-  count(3); // 3
-  count();  // 3
-  ```
-
-
-**[⬆ back to top](#table-of-contents)**
-
-## Arrow Functions
-
-  - [8.1](#8.1) <a name='8.1'></a> When you must use function expressions (as when passing an anonymous function), use arrow function notation.
-
-  > Why? It creates a version of the function that executes in the context of `this`, which is usually what you want, and is a more concise syntax.
-
-  > Why not? If you have a fairly complicated function, you might move that logic out into its own function declaration.
-
-    ```javascript
-    // bad
-    [1, 2, 3].map(function (x) {
-
-      return x * x;
-
-    });
-
-    // good
-    [1, 2, 3].map((x) => {
-
-      return x * x;
-
-    });
-
-    // good
-    [1, 2, 3].map((x) => x * x;);
-    ```
-
-  - [8.2](#8.2) <a name='8.2'></a> If the function body fits on one line and there is only a single argument, feel free to omit the braces and parentheses, and use the implicit return. Otherwise, add the parentheses, braces, and use a `return` statement.
-
-  > Why? Syntactic sugar. It reads well when multiple functions are chained together.
-
-  > Why not? If you plan on returning an object.
-
-    ```javascript
-    // good
-    [1, 2, 3].map(x => x * x);
-
-    // good
-    [1, 2, 3].reduce((total, n) => {
-      return total + n;
-    }, 0);
-    ```
-
-**[⬆ back to top](#table-of-contents)**
-
-
-## Constructors
-
-  - [9.1](#9.1) <a name='9.1'></a> Always use `class`. Avoid manipulating `prototype` directly.
-
-  > Why? `class` syntax is more concise and easier to reason about.
-
-    ```javascript
-    // bad
-    function Queue(contents = []) {
-
-      this._queue = [...contents];
-
-    }
-    Queue.prototype.pop = function() {
-
-      const value = this._queue[0];
-      this._queue.splice(0, 1);
-      return value;
-
-    }
-
-
-    // good
-    class Queue {
-
-      constructor(contents = []) {
-
-        this._queue = [...contents];
-
-      }
-
-      pop() {
-
-        const value = this._queue[0];
-        this._queue.splice(0, 1);
-        return value;
-
-      }
-
-    }
-    ```
-
-  - [9.2](#9.2) <a name='9.2'></a> Use `extends` for inheritance.
-
-  > Why? It is a built-in way to inherit prototype functionality without breaking `instanceof`.
-
-    ```javascript
-    // bad
-    const inherits = require('inherits');
-    function PeekableQueue(contents) {
-
-      Queue.apply(this, contents);
-
-    }
-    inherits(PeekableQueue, Queue);
-    PeekableQueue.prototype.peek = function() {
-
-      return this._queue[0];
-
-    }
-
-    // good
-    class PeekableQueue extends Queue {
-
-      peek() {
-
-        return this._queue[0];
-
-      }
-
-    }
-    ```
-
-  - [9.3](#9.3) <a name='9.3'></a> Methods can return `this` to help with method chaining.
-
-    ```javascript
-    // bad
-    Jedi.prototype.jump = function() {
-
-      this.jumping = true;
-      return true;
-
-    };
-
-    Jedi.prototype.setHeight = function(height) {
-
-      this.height = height;
-
-    };
-
-    const luke = new Jedi();
-    luke.jump(); // => true
-    luke.setHeight(20); // => undefined
-
-    // good
-    class Jedi {
-
-      jump() {
-
-        this.jumping = true;
-        return this;
-
-      }
-
-      setHeight(height) {
-
-        this.height = height;
-        return this;
-
-      }
-
-    }
-
-    const luke = new Jedi();
-
-    luke.jump()
-      .setHeight(20);
-    ```
-
-
-  - [9.4](#9.4) <a name='9.4'></a> It's okay to write a custom toString() method, just make sure it works successfully and causes no side effects.
-
-    ```javascript
-    class Jedi {
-
-      contructor(options = {}) {
-
-        this.name = options.name || 'no name';
-
-      }
-
-      getName() {
-
-        return this.name;
-
-      }
-
-      toString() {
-
-        return `Jedi - ${this.getName()}`;
-
-      }
-
-    }
-    ```
-
-<a name="ts-classes"></a>
-  - [9.5](#9.5) <a name='9.5'></a> Typescript classes placeholder.
-
-**[⬆ back to top](#table-of-contents)**
-
-
-## Modules
-
-  - [10.1](#10.1) <a name='10.1'></a> Use modules (`import`/`export`) over a non-standard module system.
-
-  > Why? Modules are the future, let's start using the future now.
-
-    ```javascript
-    // bad
-    const AirbnbStyleGuide = require('./AirbnbStyleGuide');
-    module.exports = AirbnbStyleGuide.es6;
-
-    // ok
-    import AirbnbStyleGuide from './AirbnbStyleGuide';
-    export default AirbnbStyleGuide.es6;
-
-    // best
-    import { es6 } from './AirbnbStyleGuide';
-    export default es6;
-    ```
-
-  - [10.2](#10.2) <a name='10.2'></a>And do not export directly from an import.
-
-  > Why? Although the one-liner is concise, having one clear way to import and one clear way to export makes things consistent.
-
-    ```javascript
-    // bad
-    // filename es6.js
-    export { es6 as default } from './airbnbStyleGuide';
-
-    // good
-    // filename es6.js
-    import { es6 } from './AirbnbStyleGuide';
-    export default es6;
-    ```
-
-  - [10.3](#10.3) <a name='10.3'></a>Use TypeScript module import for non-ES6 libraries with type definitions. Check [DefinitelyTyped](https://github.com/borisyankov/DefinitelyTyped) for available type definition files.
-
-  > Why? This provides type information from external modules when available
-
-    ```javascript
-    // bad
-    /// <reference path="lodash/lodash.d.ts" />
-    var lodash = require('lodash')
-
-    // good
-    /// <reference path="lodash/lodash.d.ts" />
-    import lodash = require('lodash')
-    ```
-
-  - [10.4](#10.4) <a name='10.4'></a>Group module imports by type and then alphabetic by variable name. Follow these rules for ordering your module imports:
-    + External libraries with type definitions
-    + Internal typescript modules with wildcard imports
-    + Internal typescript modules without wildcard imports
-    + External libraries without type definitions
-
-
-  > Why? This makes your import section consistent across all modules.
-
-    ```javascript
-    // bad
-    /// <reference path="../typings/tsd.d.ts" />
-    import * as Api from './api';
-    import _ = require('lodash');
-    var Distillery = require('distillery-js');
-    import Partner from './partner';
-    import * as Util from './util';
-    import Q = require('Q');
-    var request = require('request');
-    import Customer from './customer';
-
-    // good
-    /// <reference path="../typings/tsd.d.ts" />
-    import _ = require('lodash');
-    import Q = require('Q');
-    import * as Api from './api';
-    import * as Util from './util';
-    import Customer from './customer';
-    import Partner from './partner';
-    var Distillery = require('distillery-js');
-    var request = require('request');
-    ```
-
-**[⬆ back to top](#table-of-contents)**
-
-## Iterators and Generators
-
-  - [11.1](#11.1) <a name='11.1'></a> Don't use iterators. Prefer JavaScript's higher-order functions like `map()` and `reduce()` instead of loops like `for-of`.
-
-  > Why? This enforces our immutable rule. Dealing with pure functions that return values is easier to reason about than side-effects.
-
-    ```javascript
-    const numbers = [1, 2, 3, 4, 5];
-
-    // bad
-    let sum = 0;
-    for (let num of numbers) {
-
-      sum += num;
-
-    }
-
-    sum === 15;
-
-    // good
-    let sum = 0;
-    numbers.forEach((num) => sum += num);
-    sum === 15;
-
-    // best (use the functional force)
-    const sum = numbers.reduce((total, num) => total + num, 0);
-    sum === 15;
-    ```
-
-  - [11.2](#11.2) <a name='11.2'></a> Don't use generators for now.
-
-  > Why? They don't transpile well to ES5.
-
-**[⬆ back to top](#table-of-contents)**
-
-
-## Properties
-
-  - [12.1](#12.1) <a name='12.1'></a> Use dot notation when accessing properties.
-
-    ```javascript
-    const luke = {
-      jedi: true,
-      age: 28,
-    };
-
-    // bad
-    const isJedi = luke['jedi'];
-
-    // good
-    const isJedi = luke.jedi;
-    ```
-
-  - [12.2](#12.2) <a name='12.2'></a> Use subscript notation `[]` when accessing properties with a variable.
-
-    ```javascript
-    const luke = {
-      jedi: true,
-      age: 28,
-    };
-
-    const getProp = function(prop) {
-
-      return luke[prop];
-
-    }
-
-    const isJedi = getProp('jedi');
-    ```
-
-**[⬆ back to top](#table-of-contents)**
-
-
-## Variables
-
-  - [13.1](#13.1) <a name='13.1'></a> Always use `const` to declare variables. Not doing so will result in global variables. We want to avoid polluting the global namespace. Captain Planet warned us of that.
-
-    ```javascript
-    // bad
-    superPower = new SuperPower();
-
-    // good
-    const superPower = new SuperPower();
-    ```
-
-  - [13.2](#13.2) <a name='13.2'></a> Use one `const` declaration per variable.
-
-    > Why? It's easier to add new variable declarations this way, and you never have to worry about swapping out a `;` for a `,` or introducing punctuation-only diffs.
-
-    ```javascript
-    // bad
-    const items = getItems(),
-        goSportsTeam = true,
-        dragonball = 'z';
-
-    // bad
-    // (compare to above, and try to spot the mistake)
-    const items = getItems(),
-        goSportsTeam = true;
-        dragonball = 'z';
-
-    // good
-    const items = getItems();
-    const goSportsTeam = true;
-    const dragonball = 'z';
-    ```
-
-  - [13.3](#13.3) <a name='13.3'></a> Group all your `const`s and then group all your `let`s.
-
-  > Why? This is helpful when later on you might need to assign a variable depending on one of the previous assigned variables.
-
-    ```javascript
-    // bad
-    let i, len, dragonball,
-        items = getItems(),
-        goSportsTeam = true;
-
-    // bad
-    let i;
-    const items = getItems();
-    let dragonball;
-    const goSportsTeam = true;
-    let len;
-
-    // good
-    const goSportsTeam = true;
-    const items = getItems();
-    let dragonball;
-    let i;
-    let length;
-    ```
-
-  - [13.4](#13.4) <a name='13.4'></a> Assign variables where you need them, but place them in a reasonable place.
-
-  > Why? `let` and `const` are block scoped and not function scoped.
-
-    ```javascript
-    // good
-    function() {
-
-      test();
-      console.log('doing stuff..');
-
-      //..other stuff..
-
-      const name = getName();
-
-      if (name === 'test') {
-
-        return false;
-
-      }
-
-      return name;
-
-    }
-
-    // bad - unnessary function call
-    function(hasName) {
-
-      const name = getName();
-
-      if (!hasName) {
-
-        return false;
-
-      }
-
-      this.setFirstName(name);
-
-      return true;
-
-    }
-
-    // good
-    function(hasName) {
-
-      if (!hasName) {
-
-        return false;
-
-      }
-
-      const name = getName();
-      this.setFirstName(name);
-
-      return true;
-
-    }
-    ```
-
-**[⬆ back to top](#table-of-contents)**
-
-
-## Hoisting
-
-  - [14.1](#14.1) <a name='14.1'></a> `var` declarations get hoisted to the top of their scope, their assignment does not. `const` and `let` declarations are blessed with a new concept called [Temporal Dead Zones (TDZ)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/let#Temporal_dead_zone_and_errors_with_let). It's important to know why [typeof is no longer safe](http://es-discourse.com/t/why-typeof-is-no-longer-safe/15).
-
-    ```javascript
-    // we know this wouldn't work (assuming there
-    // is no notDefined global variable)
-    function example() {
-
-      console.log(notDefined); // => throws a ReferenceError
-
-    }
-
-    // creating a variable declaration after you
-    // reference the variable will work due to
-    // variable hoisting. Note: the assignment
-    // value of `true` is not hoisted.
-    function example() {
-
-      console.log(declaredButNotAssigned); // => undefined
-      var declaredButNotAssigned = true;
-
-    }
-
-    // The interpreter is hoisting the variable
-    // declaration to the top of the scope,
-    // which means our example could be rewritten as:
-    function example() {
-
-      let declaredButNotAssigned;
-      console.log(declaredButNotAssigned); // => undefined
-      declaredButNotAssigned = true;
-
-    }
-
-    // using const and let
-    function example() {
-
-      console.log(declaredButNotAssigned); // => throws a ReferenceError
-      console.log(typeof declaredButNotAssigned); // => throws a ReferenceError
-      const declaredButNotAssigned = true;
-
-    }
-    ```
-
-  - [14.2](#14.2) <a name='14.2'></a> Anonymous function expressions hoist their variable name, but not the function assignment.
-
-    ```javascript
-    function example() {
-
-      console.log(anonymous); // => undefined
-
-      anonymous(); // => TypeError anonymous is not a function
-
-      var anonymous = function() {
-
-        console.log('anonymous function expression');
-
-      };
-
-    }
-    ```
-
-  - [14.3](#14.3) <a name='14.3'></a> Named function expressions hoist the variable name, not the function name or the function body.
-
-    ```javascript
-    function example() {
-
-      console.log(named); // => undefined
-
-      named(); // => TypeError named is not a function
-
-      superPower(); // => ReferenceError superPower is not defined
-
-      var named = function superPower() {
-
-        console.log('Flying');
-
-      };
-
-    }
-
-    // the same is true when the function name
-    // is the same as the variable name.
-    function example() {
-
-      console.log(named); // => undefined
-
-      named(); // => TypeError named is not a function
-
-      var named = function named() {
-
-        console.log('named');
-
-      }
-
-    }
-    ```
-
-  - [14.4](#14.4) <a name='14.4'></a> Function declarations hoist their name and the function body.
-
-    ```javascript
-    function example() {
-
-      superPower(); // => Flying
-
-      function superPower() {
-
-        console.log('Flying');
-
-      }
-
-    }
-    ```
-
-  - For more information refer to [JavaScript Scoping & Hoisting](http://www.adequatelygood.com/2010/2/JavaScript-Scoping-and-Hoisting) by [Ben Cherry](http://www.adequatelygood.com/).
-
-**[⬆ back to top](#table-of-contents)**
-
-
-## Comparison Operators & Equality
-
-  - [15.1](#15.1) <a name='15.1'></a> Use `===` and `!==` over `==` and `!=`.
-  - [15.2](#15.2) <a name='15.2'></a> Conditional statements such as the `if` statement evaulate their expression using coercion with the `ToBoolean` abstract method and always follow these simple rules:
-
-    + **Objects** evaluate to **true**
-    + **Undefined** evaluates to **false**
-    + **Null** evaluates to **false**
-    + **Booleans** evaluate to **the value of the boolean**
-    + **Numbers** evaluate to **false** if **+0, -0, or NaN**, otherwise **true**
-    + **Strings** evaluate to **false** if an empty string `''`, otherwise **true**
-
-    ```javascript
-    if ([0]) {
-      // true
-      // An array is an object, objects evaluate to true
-    }
-    ```
-
-  - [15.3](#15.3) <a name='15.3'></a> Use shortcuts.
-
-    ```javascript
-    // bad
-    if (name !== '') {
-      // ...stuff...
-    }
-
-    // good
-    if (name) {
-      // ...stuff...
-    }
-
-    // bad
-    if (collection.length > 0) {
-      // ...stuff...
-    }
-
-    // good
-    if (collection.length) {
-      // ...stuff...
-    }
-    ```
-
-  - [15.4](#15.4) <a name='15.4'></a> For more information see [Truth Equality and JavaScript](http://javascriptweblog.wordpress.com/2011/02/07/truth-equality-and-javascript/#more-2108) by Angus Croll.
-
-**[⬆ back to top](#table-of-contents)**
-
-
-## Blocks
-
-  - [16.1](#16.1) <a name='16.1'></a> Use braces with multi-line blocks or omit braces for two line blocks.
-
-    ```javascript
-    // bad
-    if (test) return false;
-
-    // ok
-    if (test)
-      return false;
-
-    // good
-    if (test) {
-
-      return false;
-
-    }
-
-    // bad
-    function() { return false; }
-
-    // good
-    function() {
-
-      return false;
-
-    }
-    ```
-
-  - [16.2](#16.2) <a name='16.2'></a> If you're using multi-line blocks with `if` and `else`, put `else` on the same line as your
-    `if` block's closing brace.
-
-    ```javascript
-    // bad
-    if (test) {
-      thing1();
-      thing2();
-    }
-    else {
-      thing3();
-    }
-
-    // good
-    if (test) {
-      thing1();
-      thing2();
-    } else {
-      thing3();
-    }
-    ```
-
-    - [16.3](#16.3) <a name='16.3'></a> If you're using multi-line blocks with `if` and `else`, do not omit curly braces.
-
-    > Why? Omitting curly braces in multi-line blocks can easily cause unexpected behavior.
-
-      ```javascript
-      // bad
-      if (test)
-        thing1();
-        thing2();
-      else
-        thing3();
-
-      // good
-      if (test) {
-        thing1();
-        thing2();
-      } else {
-        thing3();
-      }
-      ```
-
-
-**[⬆ back to top](#table-of-contents)**
-
-
-## Comments
-
-  - [17.1](#17.1) <a name='17.1'></a> Use `/** ... */` for multi-line comments. Include a description, specify types and values for all parameters and return values.
-
-    ```javascript
-    // bad
-    // make() returns a new element
-    // based on the passed in tag name
-    //
-    // @param {String} tag
-    // @return {Element} element
-    const make = function(tag) {
-
-      // ...stuff...
-
-      return element;
-
-    }
-
-    // good
-    /**
-     * make() returns a new element
-     * based on the passed in tag name
-     *
-     * @param {String} tag
-     * @return {Element} element
-     */
-    const make = function(tag) {
-
-      // ...stuff...
-
-      return element;
-
-    }
-    ```
-
-  - [17.2](#17.2) <a name='17.2'></a> Use `//` for single line comments. Place single line comments on a newline above the subject of the comment. Put an empty line before the comment.
-
-    ```javascript
-    // bad
-    const active = true;  // is current tab
-
-    // good
-    // is current tab
-    const active = true;
-
-    // bad
-    const getType = function() {
-
-      console.log('fetching type...');
-      // set the default type to 'no type'
-      const type = this._type || 'no type';
-
-      return type;
-
-    }
-
-    // good
-    const getType = function() {
-
-      console.log('fetching type...');
-
-      // set the default type to 'no type'
-      const type = this._type || 'no type';
-
-      return type;
-
-    }
-    ```
-
-  - [17.3](#17.3) <a name='17.3'></a> Prefixing your comments with `FIXME` or `TODO` helps other developers quickly understand if you're pointing out a problem that needs to be revisited, or if you're suggesting a solution to the problem that needs to be implemented. These are different than regular comments because they are actionable. The actions are `FIXME -- need to figure this out` or `TODO -- need to implement`.
-
-  - [17.4](#17.4) <a name='17.4'></a> Use `// FIXME:` to annotate problems.
-
-    ```javascript
-    class Calculator {
-
-      constructor() {
-        // FIXME: shouldn't use a global here
-        total = 0;
-      }
-
-    }
-    ```
-
-  - [17.5](#17.5) <a name='17.5'></a> Use `// TODO:` to annotate solutions to problems.
-
-    ```javascript
-    class Calculator {
-
-      constructor() {
-        // TODO: total should be configurable by an options param
-        this.total = 0;
-      }
-
-    }
-    ```
-
-**[⬆ back to top](#table-of-contents)**
-
-
-## Whitespace
-
-  - [18.1](#18.1) <a name='18.1'></a> Use soft tabs set to 2 spaces.
-
-    ```javascript
-    // bad
-    function() {
-
-    ∙∙∙∙const name;
-
-    }
-
-    // bad
-    function() {
-
-    ∙const name;
-
-    }
-
-    // good
-    function() {
-
-    ∙∙const name;
-
-    }
-    ```
-
-  - [18.2](#18.2) <a name='18.2'></a> Place 1 space before the leading brace.
-
-    ```javascript
-    // bad
-    const test = function(){
-
-      console.log('test');
-
-    }
-
-    // good
-    const test = function() {
-
-      console.log('test');
-
-    }
-
-    // bad
-    dog.set('attr',{
-      age: '1 year',
-      breed: 'Bernese Mountain Dog',
-    });
-
-    // good
-    dog.set('attr', {
-      age: '1 year',
-      breed: 'Bernese Mountain Dog',
-    });
-    ```
-
-  - [18.3](#18.3) <a name='18.3'></a> Place 1 space before the opening parenthesis in control statements (`if`, `while` etc.). Place no space before the argument list in function calls and declarations.
-
-    ```javascript
-    // bad
-    if(isJedi) {
-
-      fight ();
-
-    }
-
-    // good
-    if (isJedi) {
-
-      fight();
-
-    }
-
-    // bad
-    const fight = function () {
-
-      console.log ('Swooosh!');
-
-    }
-
-    // good
-    const fight = function() {
-
-      console.log('Swooosh!');
-
-    }
-    ```
-
-  - [18.4](#18.4) <a name='18.4'></a> Set off operators with spaces.
-
-    ```javascript
-    // bad
-    const x=y+5;
-
-    // good
-    const x = y + 5;
-    ```
-
-  - [18.5](#18.5) <a name='18.5'></a> End files with a single newline character.
-
-    ```javascript
-    // bad
-    (function(global) {
-      // ...stuff...
-    })(this);
-    ```
-
-    ```javascript
-    // bad
-    (function(global) {
-      // ...stuff...
-    })(this);↵
-    ↵
-    ```
-
-    ```javascript
-    // good
-    (function(global) {
-      // ...stuff...
-    })(this);↵
-    ```
-
-  - [18.5](#18.5) <a name='18.5'></a> Use indentation when making long method chains. Use a leading dot, which
-    emphasizes that the line is a method call, not a new statement.
-
-    ```javascript
-    // bad
-    $('#items').find('.selected').highlight().end().find('.open').updateCount();
-
-    // bad
-    $('#items').
-      find('.selected').
-        highlight().
-        end().
-      find('.open').
-        updateCount();
-
-    // good
-    $('#items')
-      .find('.selected')
-        .highlight()
-        .end()
-      .find('.open')
-        .updateCount();
-
-    // bad
-    const leds = stage.selectAll('.led').data(data).enter().append('svg:svg').class('led', true)
-        .attr('width', (radius + margin) * 2).append('svg:g')
-        .attr('transform', 'translate(' + (radius + margin) + ',' + (radius + margin) + ')')
-        .call(tron.led);
-
-    // good
-    const leds = stage.selectAll('.led')
-        .data(data)
-      .enter().append('svg:svg')
-        .classed('led', true)
-        .attr('width', (radius + margin) * 2)
-      .append('svg:g')
-        .attr('transform', 'translate(' + (radius + margin) + ',' + (radius + margin) + ')')
-        .call(tron.led);
-    ```
-
-  - [18.6](#18.6) <a name='18.6'></a> Leave a blank line after the opening of a block and before the closing of a block
-
-  ```javascript
-  // bad
-  if (foo) {
-    return bar;
-  }
-
-  // good
-  if (foo) {
-
-    return bar;
-
-  }
-
-  // bad
-  const baz = function(foo) {
-    return bar;
-  }
-
-  // good
-  const baz = function(foo) {
-
-    return bar;
-
-  }
-  ```
-
-  - [18.7](#18.7) <a name='18.7'></a> Leave a blank line after blocks and before the next statement.
-
-    ```javascript
-    // bad
-    if (foo) {
-
-      return bar;
-
-    }
-    return baz;
-
-    // good
-    if (foo) {
-
-      return bar;
-
-    }
-
-    return baz;
-
-    // bad
-    const obj = {
-      foo() {
-      },
-      bar() {
-      },
-    };
-    return obj;
-
-    // good
-    const obj = {
-      foo() {
-      },
-
-      bar() {
-      },
-    };
-
-    return obj;
-    ```
-
-
-**[⬆ back to top](#table-of-contents)**
-
-## Commas
-
-  - [19.1](#19.1) <a name='19.1'></a> Leading commas: **Nope.**
-
-    ```javascript
-    // bad
-    const story = [
-        once
-      , upon
-      , aTime
-    ];
-
-    // good
-    const story = [
-      once,
-      upon,
-      aTime,
-    ];
-
-    // bad
-    const hero = {
-        firstName: 'Ada'
-      , lastName: 'Lovelace'
-      , birthYear: 1815
-      , superPower: 'computers'
-    };
-
-    // good
-    const hero = {
-      firstName: 'Ada',
-      lastName: 'Lovelace',
-      birthYear: 1815,
-      superPower: 'computers',
-    };
-    ```
-
-  - [19.2](#19.2) <a name='19.2'></a> Additional trailing comma: **Yup.**
-
-  > Why? This leads to cleaner git diffs. Also, transpilers like Babel will remove the additional trailing comma in the transpiled code which means you don't have to worry about the [trailing comma problem](es5/README.md#commas) in legacy browsers.
-
-    ```javascript
-    // bad - git diff without trailing comma
-    const hero = {
-         firstName: 'Florence',
-    -    lastName: 'Nightingale'
-    +    lastName: 'Nightingale',
-    +    inventorOf: ['coxcomb graph', 'mordern nursing']
-    }
-
-    // good - git diff with trailing comma
-    const hero = {
-         firstName: 'Florence',
-         lastName: 'Nightingale',
-    +    inventorOf: ['coxcomb chart', 'mordern nursing'],
-    }
-
-    // bad
-    const hero = {
-      firstName: 'Dana',
-      lastName: 'Scully'
-    };
-
-    const heroes = [
-      'Batman',
-      'Superman'
-    ];
-
-    // good
-    const hero = {
-      firstName: 'Dana',
-      lastName: 'Scully',
-    };
-
-    const heroes = [
-      'Batman',
-      'Superman',
-    ];
-    ```
-
-**[⬆ back to top](#table-of-contents)**
-
-
-## Semicolons
-
-  - [20.1](#20.1) <a name='20.1'></a> **Yup.**
-
-    ```javascript
-    // bad
-    (function() {
-
-      const name = 'Skywalker'
-      return name
-
-    })()
-
-    // good
-    (() => {
-
-      const name = 'Skywalker';
-      return name;
-
-    })();
-
-    // good (guards against the function becoming an argument when two files with IIFEs are concatenated)
-    ;(() => {
-
-      const name = 'Skywalker';
-      return name;
-
-    })();
-    ```
-
-    [Read more](http://stackoverflow.com/a/7365214/1712802).
-
-**[⬆ back to top](#table-of-contents)**
-
-
-## Type Casting & Coercion
-
-  - [21.1](#21.1) <a name='21.1'></a> Perform type coercion at the beginning of the statement.
-  - [21.2](#21.2) <a name='21.2'></a> Strings:
-
-    ```javascript
-    //  => this.reviewScore = 9;
-
-    // bad
-    const totalScore = this.reviewScore + '';
-
-    // good
-    const totalScore = String(this.reviewScore);
-    ```
-
-  - [21.3](#21.3) <a name='21.3'></a> Use `parseInt` for Numbers and always with a radix for type casting.
-
-    ```javascript
-    const inputValue = '4';
-
-    // bad
-    const val = new Number(inputValue);
-
-    // bad
-    const val = +inputValue;
-
-    // bad
-    const val = inputValue >> 0;
-
-    // bad
-    const val = parseInt(inputValue);
-
-    // good
-    const val = Number(inputValue);
-
-    // good
-    const val = parseInt(inputValue, 10);
-    ```
-
-  - [21.4](#21.4) <a name='21.4'></a> If for whatever reason you are doing something wild and `parseInt` is your bottleneck and need to use Bitshift for [performance reasons](http://jsperf.com/coercion-vs-casting/3), leave a comment explaining why and what you're doing.
-
-    ```javascript
-    // good
-    /**
-     * parseInt was the reason my code was slow.
-     * Bitshifting the String to coerce it to a
-     * Number made it a lot faster.
-     */
-    const val = inputValue >> 0;
-    ```
-
-  - [21.5](#21.5) <a name='21.5'></a> **Note:** Be careful when using bitshift operations. Numbers are represented as [64-bit values](http://es5.github.io/#x4.3.19), but Bitshift operations always return a 32-bit integer ([source](http://es5.github.io/#x11.7)). Bitshift can lead to unexpected behavior for integer values larger than 32 bits. [Discussion](https://github.com/airbnb/javascript/issues/109). Largest signed 32-bit Int is 2,147,483,647:
-
-    ```javascript
-    2147483647 >> 0 //=> 2147483647
-    2147483648 >> 0 //=> -2147483648
-    2147483649 >> 0 //=> -2147483647
-    ```
-
-  - [21.6](#21.6) <a name='21.6'></a> Booleans:
-
-    ```javascript
-    const age = 0;
-
-    // bad
-    const hasAge = new Boolean(age);
-
-    // good
-    const hasAge = Boolean(age);
-
-    // good
-    const hasAge = !!age;
-    ```
-
-**[⬆ back to top](#table-of-contents)**
-
-
-## Naming Conventions
-
-  - [22.1](#22.1) <a name='22.1'></a> Avoid single letter names. Be descriptive with your naming.
-
-    ```javascript
-    // bad
-    function q() {
-      // ...stuff...
-    }
-
-    // good
-    function query() {
-      // ..stuff..
-    }
-    ```
-
-  - [22.2](#22.2) <a name='22.2'></a> Use camelCase when naming objects, functions, and instances.
-
-    ```javascript
-    // bad
-    const OBJEcttsssss = {};
-    const this_is_my_object = {};
-    const c = function() {}
-
-    // good
-    const thisIsMyObject = {};
-    const thisIsMyFunction = function() {}
-    ```
-
-  - [22.3](#22.3) <a name='22.3'></a> Use PascalCase when naming constructors, classes, modules, or interfaces.
-
-    ```javascript
-    // bad
-    function user(options) {
-
-      this.name = options.name;
-
-    }
-
-    const bad = new user({
-      name: 'nope',
-    });
-
-    // good
-    module AperatureScience {
-
-      class User {
-
-        constructor(options) {
-
-          this.name = options.name;
-
-        }
-
-      }
-
-    }
-
-    const good = new AperatureScience.User({
-      name: 'yup',
-    });
-    ```
-
-  - [22.4](#22.4) <a name='22.4'></a> Use snake_case when naming object properties.
-
-    ```javascript
-    // bad
-    const panda = {
-      firstName: 'Mr.',
-      LastName: 'Panda'
-    }
-
-    // good
-    const panda = {
-      first_name: 'Mr.',
-      Last_name: 'Panda'
-    }
-    ```
-
-  - [22.5](#22.5) <a name='22.5'></a> Use a leading underscore `_` when naming private properties.
-
-    ```javascript
-    // bad
-    this.__firstName__ = 'Panda';
-    this.firstName_ = 'Panda';
-
-    // good
-    this._firstName = 'Panda';
-    ```
-
-  - [22.6](#22.6) <a name='22.6'></a> Don't save references to `this`. Use arrow functions or Function#bind.
-
-    ```javascript
-    // bad
-    function foo() {
-
-      const self = this;
-      return function() {
-
-        console.log(self);
-
-      };
-
-    }
-
-    // bad
-    function foo() {
-
-      const that = this;
-      return function() {
-
-        console.log(that);
-
-      };
-
-    }
-
-    // good
-    function foo() {
-
-      return () => {
-        console.log(this);
-      };
-
-    }
-    ```
-
-  - [22.7](#22.7) <a name='22.7'></a> If your file exports a single class, your filename should be exactly the name of the class.
-    ```javascript
-    // file contents
-    class CheckBox {
-      // ...
-    }
-    export default CheckBox;
-
-    // in some other file
-    // bad
-    import CheckBox from './checkBox';
-
-    // bad
-    import CheckBox from './check_box';
-
-    // good
-    import CheckBox from './CheckBox';
-    ```
-
-  - [22.8](#22.8) <a name='22.8'></a> Use camelCase when you export-default a function. Your filename should be identical to your function's name.
-
-    ```javascript
-    function makeStyleGuide() {
-    }
-
-    export default makeStyleGuide;
-    ```
-
-  - [22.9](#22.9) <a name='22.9'></a> Use PascalCase when you export a singleton / function library / bare object.
-
-    ```javascript
-    const AirbnbStyleGuide = {
-      es6: {
-      }
-    };
-
-    export default AirbnbStyleGuide;
-    ```
-
-
-**[⬆ back to top](#table-of-contents)**
-
-
-## Accessors
-
-  - [23.1](#23.1) <a name='23.1'></a> Accessor functions for properties are not required.
-  - [23.2](#23.2) <a name='23.2'></a> If you do make accessor functions use getVal() and setVal('hello').
-
-    ```javascript
-    // bad
-    dragon.age();
-
-    // good
-    dragon.getAge();
-
-    // bad
-    dragon.age(25);
-
-    // good
-    dragon.setAge(25);
-    ```
-
-  - [23.3](#23.3) <a name='23.3'></a> If the property is a boolean, use isVal() or hasVal().
-
-    ```javascript
-    // bad
-    if (!dragon.age()) {
-      return false;
-    }
-
-    // good
-    if (!dragon.hasAge()) {
-      return false;
-    }
-    ```
-
-  - [23.4](#23.4) <a name='23.4'></a> It's okay to create get() and set() functions, but be consistent.
-
-    ```javascript
-    class Jedi {
-
-      constructor(options = {}) {
-
-        const lightsaber = options.lightsaber || 'blue';
-        this.set('lightsaber', lightsaber);
-
-      }
-
-      set(key, val) {
-
-        this[key] = val;
-
-      }
-
-      get(key) {
-
-        return this[key];
-
-      }
-
-    }
-    ```
-
-**[⬆ back to top](#table-of-contents)**
-
-
-## Events
-
-  - [24.1](#24.1) <a name='24.1'></a> When attaching data payloads to events (whether DOM events or something more proprietary like Backbone events), pass a hash instead of a raw value. This allows a subsequent contributor to add more data to the event payload without finding and updating every handler for the event. For example, instead of:
-
-    ```javascript
-    // bad
-    $(this).trigger('listingUpdated', listing.id);
-
-    ...
-
-    $(this).on('listingUpdated', function(e, listingId) {
-      // do something with listingId
-    });
-    ```
-
-    prefer:
-
-    ```javascript
-    // good
-    $(this).trigger('listingUpdated', { listingId : listing.id });
-
-    ...
-
-    $(this).on('listingUpdated', function(e, data) {
-      // do something with data.listingId
-    });
-    ```
-
-  **[⬆ back to top](#table-of-contents)**
-
-
-## jQuery
-
-  - [25.1](#25.1) <a name='25.1'></a> Prefix jQuery object variables with a `$`.
-
-    ```javascript
-    // bad
-    const sidebar = $('.sidebar');
-
-    // good
-    const $sidebar = $('.sidebar');
-    ```
-
-  - [25.2](#25.2) <a name='25.2'></a> Cache jQuery lookups.
-
-    ```javascript
-    // bad
-    function setSidebar() {
-
-      $('.sidebar').hide();
-
-      // ...stuff...
-
-      $('.sidebar').css({
-        'background-color': 'pink'
-      });
-
-    }
-
-    // good
-    function setSidebar() {
-
-      const $sidebar = $('.sidebar');
-      $sidebar.hide();
-
-      // ...stuff...
-
-      $sidebar.css({
-        'background-color': 'pink'
-      });
-
-    }
-    ```
-
-  - [25.3](#25.3) <a name='25.3'></a> For DOM queries use Cascading `$('.sidebar ul')` or parent > child `$('.sidebar > ul')`. [jsPerf](http://jsperf.com/jquery-find-vs-context-sel/16)
-  - [25.4](#25.4) <a name='25.4'></a> Use `find` with scoped jQuery object queries.
-
-    ```javascript
-    // bad
-    $('ul', '.sidebar').hide();
-
-    // bad
-    $('.sidebar').find('ul').hide();
-
-    // good
-    $('.sidebar ul').hide();
-
-    // good
-    $('.sidebar > ul').hide();
-
-    // good
-    $sidebar.find('ul').hide();
-    ```
-
-**[⬆ back to top](#table-of-contents)**
-
-
-## Type Annotations
-
-<a name="ts-type-annotations"></a>
-  - [26.1](#26.1) <a name='26.1'></a> Type annotations placeholder.
-
-<a name="ts-generics"></a>
-  - [26.2](#26.2) <a name='26.2'></a> Use "T" for the type variable if only one is needed.
-
-```javascript
-function identify<T>(arg: T): T {
-
-    return arg;
-    
-}
+# TypeScript风格指南
+
+TypeSctipt作为JS的超集，在编码规范上也做了很多规定，我们平时在编写TS时，可以按照下面的规范去完善，下面是我翻译github上的一个关于TS编码规范的[项目](https://github.com/excelmicro/typescript)。
+
+1. 类型
+2. 引用
+3. 对象
+4. 数组
+5. 解构
+6. 字符串
+7. 函数
+8. 箭头函数
+9. 构造函数
+10. 模块
+11. 迭代器和生成器
+12. 属性
+13. 变量
+14. 变量提升
+15. 比较运算符与相等
+16. 块
+17. 注释
+18. 空白
+19. 逗号
+20. 分号
+21. 类型铸造与强制
+22. 命名约定
+23. 访问器
+24. 事件
+25. JQuery
+26. 类型声明
+27. 接口、
+
+## 1.类型
+
+1.1 基本类型：当使用基础类型时，可以直接使用它的值
+
+- string
+- number
+- boolean
+- null
+- undefined
+
+```js
+const foo = 1;
+let bar = foo;
+bar = 9;
+console.log(foo, bar);  // => 1, 9
 ```
 
-  - [26.3](#26.3) <a name='26.3'></a> If more than one type variable is required, start with letter "T" and name your variable in alphabetical sequence.
+1.2 复杂类型：当使用复杂类型时，你使用的是该值的引用
 
-```javascript
-function find<T, U extends Findable>(needle: T, haystack: U): U {
+- object
+- array
+- function
 
-  return haystack.find(needle)
-
-}
+```js
+const foo = [1, 2];
+const bar = foo;
+bar[0] = 9;
+console.log(foo[0], bar[0]); // => 9, 9
 ```
 
-  - [26.4](#26.4) <a name='26.4'></a> When possible, allow the compiler to infer type of variables.
+## 2.引用
 
-```javascript
+2.1 使用const声明你的变量，避免使用var
+
+> 为什么？这将确保你不能重新赋值你声明的变量(变异)，那将容易出现bug并让代码难以理解
+
+```js
 // bad
-const output = identify<string>("myString");
+var a = 1;
+var b = 2;
 
 // good
-const output = identity("myString");
+const a = 1;
+const b = 2;
 ```
 
-  - [26.5](#26.5) <a name='26.5'></a> When creating factories using generics, be sure to include the constructor function in the type.
+2.2 如果必须改变变量，使用let而不是var
 
-```javascript
-function create<t>(thing: {new(): T;}): T {
+> let是块作用域而不是像var那样的函数作用域
 
-  return new thing();
+```js
+// bad
+var count = 1;
+if (true) {
+
+  count += 1;
+
+}
+
+// good, use the let.
+let count = 1;
+if (true) {
+
+  count += 1;
 
 }
 ```
 
-**[⬆ back to top](#table-of-contents)**
+2.3 注意let和const都是块作用域
+
+```js
+// const and let only exist in the blocks they are defined in.
+{
+  let a = 1;
+  const b = 1;
+}
+console.log(a); // ReferenceError
+console.log(b); // ReferenceError
+```
+
+## 3.对象
+
+3.1 直接使用符号定义对象，而不是实例化对象
+
+```js
+// bad
+const item = new Object();
+
+// good
+const item = {};
+```
+
+3.2 不要使用关键字作为对象的key，它在IE8不起作用
+
+```js
+// bad
+const superman = {
+  default: { clark: 'kent' },
+  private: true,
+};
+
+// good
+const superman = {
+  defaults: { clark: 'kent' },
+  hidden: true,
+};
+```
+
+3.3 使用可读的同义词来取代关键字作为key
+
+```js
+// bad
+const superman = {
+  class: 'alien',
+};
+
+// bad
+const superman = {
+  klass: 'alien',
+};
+
+// good
+const superman = {
+  type: 'alien',
+};
+```
+
+3.4 当使用动态属性名创建对象时，使用计算属性名
+
+> 它允许你在一个地方定义所有的属性
+
+```js
+const getKey = function(k) {
+
+  return `a key named ${k}`;
+
+}
+
+// bad
+const obj = {
+  id: 5,
+  name: 'San Francisco',
+};
+obj[getKey('enabled')] = true;
+
+// good
+const obj = {
+  id: 5,
+  name: 'San Francisco',
+  [getKey('enabled')]: true,
+};
+```
+
+3.5 定义对象方法使用箭头函数而不是匿名函数或快捷属性
+
+```js
+// bad
+const atom = {
+  value: 1,
+  addValue: function (value) {
+    return atom.value + value;
+  },
+};
+
+// bad
+const atom = {
+  value: 1,
+  addValue(value) {
+    return atom.value + value;
+  },
+};
+
+// good
+const atom = {
+  value: 1,
+  addValue: (value) => atom.value + value
+};
+```
+
+3.6 使用简略属性值
+
+```js
+const lukeSkywalker = 'Luke Skywalker';
+
+// bad
+const obj = {
+  lukeSkywalker: lukeSkywalker,
+};
+
+// good
+const obj = {
+  lukeSkywalker,
+};
+```
+
+3.7 在声明对象时，将简略属性值放在前面
+
+> 更容易显示哪些属性是快捷属性值
+
+```js
+const anakinSkywalker = 'Anakin Skywalker';
+const lukeSkywalker = 'Luke Skywalker';
+
+// bad
+const obj = {
+  episodeOne: 1,
+  twoJedisWalkIntoACantina: 2,
+  lukeSkywalker,
+  episodeThree: 3,
+  mayTheFourth: 4,
+  anakinSkywalker,
+};
+
+// good
+const obj = {
+  lukeSkywalker,
+  anakinSkywalker,
+  episodeOne: 1,
+  twoJedisWalkIntoACantina: 2,
+  episodeThree: 3,
+  mayTheFourth: 4,
+};
+```
+
+## 4.数组
+
+4.1 直接使用符号声明数组，而不是实例化对象
+
+```js
+// bad
+const items = new Array();
+
+// good
+const items = [];
+```
+
+4.2 使用Array的push方法添加元素而不是直接赋值
+
+```js
+const someStack = [];
 
 
-## Interfaces
+// bad
+someStack[someStack.length] = 'abracadabra';
 
-<a name="ts-interfaces"></a>
-  - [27.1](#27.1) <a name='27.1'></a> Interface placeholder.
+// good
+someStack.push('abracadabra');
+```
 
-**[⬆ back to top](#table-of-contents)**
+4.3 使用**...**复制数组
 
+```js
+// bad
+const len = items.length;
+const itemsCopy = [];
+let i;
 
-## Organization
+for (i = 0; i < len; i++) {
+  itemsCopy[i] = items[i];
+}
 
-<a name="ts-modules"></a>
-  - [28.1](#28.1) <a name='28.1'></a> 1 file per logical component, and each file should be divided into logical divisions via modules. 
+// good
+const itemsCopy = [...items];
+```
 
-  ```javascript
-  module Automobile {
+4.4 使用Array的from方法来转换数组化对象为数组
 
-    module Honda {
+```js
+const foo = document.querySelectorAll('.foo');
+const nodes = Array.from(foo);
+```
 
-    }
+## 5.解构
+
+5.1 访问和使用对象的多个属性时使用解构
+
+> 解构使你不用为这些属性创建l临时引用
+
+```js
+// bad
+const getFullName = function(user) {
+
+  const firstName = user.firstName;
+  const lastName = user.lastName;
+
+  return `${firstName} ${lastName}`;
+
+}
+
+// good
+const getFullName = function(obj) {
+
+  const { firstName, lastName } = obj;
+  return `${firstName} ${lastName}`;
+
+}
+
+// best
+const getFullName = function({ firstName, lastName }) {
+
+  return `${firstName} ${lastName}`;
+
+}
+```
+
+5.2 数组解构
+
+```js
+const arr = [1, 2, 3, 4];
+
+// bad
+const first = arr[0];
+const second = arr[1];
+
+// good
+const [first, second] = arr;
+```
+
+5.3 对多个返回值使用对象解构，而不是数组解构
+
+> 随着时间的推移，你可以添加新的属性或者更改事物的顺序，而不会破坏调用的地方
+
+```js
+// bad
+const processInput = function(input) {
+  // then a miracle occurs
+  return [left, right, top, bottom];
+
+}
+
+// the caller needs to think about the order of return data
+const [left, __, top] = processInput(input);
+
+// good
+const processInput = function(input) {
+  // then a miracle occurs
+  return { left, right, top, bottom };
+
+}
+
+// the caller selects only the data they need
+const { left, right } = processInput(input);
+```
+
+## 6.字符串
+
+6.1 对字符串使用单引号
+
+```js
+// bad
+const name = "Capt. Janeway";
+
+// good
+const name = 'Capt. Janeway';
+```
+
+6.2 当字符串长度超过80字符时，应当使用字符串连接跨多行编写
+
+6.3 注意：如果过度使用，使用连接的长字符串可能会影响性能
+
+```js
+// bad
+const errorMessage = 'This is a super long error that was thrown because of Batman. When you stop to think about how Batman had anything to do with this, you would get nowhere fast.';
+
+// bad
+const errorMessage = 'This is a super long error that was thrown because \
+of Batman. When you stop to think about how Batman had anything to do \
+with this, you would get nowhere \
+fast.';
+
+// good
+const errorMessage = 'This is a super long error that was thrown because ' +
+  'of Batman. When you stop to think about how Batman had anything to do ' +
+  'with this, you would get nowhere fast.';
+```
+
+6.4 在编程中构建字符串时，请使用模板字符串而不是连接字符串
+
+> 模板字符串提供简洁，易读的语法，具有正确的换行符和字符串插值功能
+
+```js
+// bad
+const sayHi = function(name) {
+
+  return 'How are you, ' + name + '?';
+
+}
+
+// bad
+const sayHi = function(name) {
+
+  return ['How are you, ', name, '?'].join();
+
+}
+
+// good
+const sayHi = function(name) {
+
+  return `How are you, ${name}?`;
+
+}
+```
+
+## 7.函数
+
+7.1 使用函数表达式而不是函数声明
+
+```js
+// bad
+function foo() {
+}
+
+// good
+const foo = function() {
+};
+
+// good
+const foo = () => {
+};
+```
+
+7.2 函数表达式
+
+```js
+// immediately-invoked function expression (IIFE)  立即调用函数表达式
+(() => {
+  console.log('Welcome to the Internet. Please follow me.');
+})();
+```
+
+7.3 不要在非函数块中(比如：if，while)声明一个函数，而是将函数赋值给一个变量
+
+7.4 ECMA-262定义一个块作为许多声明。就是将块作用域中的变量名在外面声明。
+
+```js
+// bad
+if (currentUser) {
+
+  const test = function() {
+
+    console.log('Nope.');
 
   }
+
+}
+
+// good
+let test;
+if (currentUser) {
+
+  test = () => {
+
+    console.log('Yup.');
+
+  };
+
+}
+```
+
+7.5 不要使用``arguments``命名形参，会覆盖原arguments的作用
+
+```js
+// bad
+const nope = function(name, options, arguments) {
+  // ...stuff...
+}
+
+// good
+const yup = function(name, options, args) {
+  // ...stuff...
+}
+```
+
+7.6 不要使用``arguments``，而是使用不定长参数``...``语法
+
+> ...rest作为形参时，rest是真正的数组，而不是像arguments那样的类数组对象
+
+```js
+// bad
+const concatenateAll = function() {
+
+  const args = Array.prototype.slice.call(arguments);
+  return args.join('');
+
+}
+
+// good
+const concatenateAll = function(...args) {
+
+  return args.join('');
+
+}
+```
+
+7.7 使用默认参数而不是改变函数参数
+
+```js
+// really bad
+const handleThings = function(opts) {
+  // No! We shouldn't mutate function arguments.
+  // Double bad: if opts is falsy it'll be set to an object which may
+  // be what you want but it can introduce subtle bugs.
+  opts = opts || {};
+  // ...
+}
+
+// still bad
+const handleThings = function(opts) {
+
+  if (opts === void 0) {
+
+    opts = {};
+
+  }
+  // ...
+}
+
+// good
+const handleThings = function(opts = {}) {
+  // ...
+}
+```
+
+## 8.箭头函数
+
+8.1 当使用函数表达式时(传递一个匿名函数)，使用箭头函数
+
+```js
+// bad
+[1, 2, 3].map(function (x) {
+
+  return x * x;
+
+});
+
+// good
+[1, 2, 3].map((x) => {
+
+  return x * x;
+
+});
+
+// good
+[1, 2, 3].map((x) => x * x;);
+```
+
+8.2 如果函数体只有一行并且只有一个参数，可随意省略大括号和小括号，并使用隐士返回；否则添加大括号和小括号，并使用return语句
+
+```js
+// good
+[1, 2, 3].map(x => x * x);
+
+// good
+[1, 2, 3].reduce((total, n) => {
+  return total + n;
+}, 0);
+```
+
+## 9.构造函数
+
+9.1 总是使用``class``，避免直接使用``prototype``
+
+> class语法更简洁，更容易理解
+
+```js
+// bad
+function Queue(contents = []) {
+
+  this._queue = [...contents];
+
+}
+Queue.prototype.pop = function() {
+
+  const value = this._queue[0];
+  this._queue.splice(0, 1);
+  return value;
+
+}
+
+
+// good
+class Queue {
+
+  constructor(contents = []) {
+
+    this._queue = [...contents];
+
+  }
+
+  pop() {
+
+    const value = this._queue[0];
+    this._queue.splice(0, 1);
+    return value;
+
+  }
+
+}
+```
+
+9.2 使用``extends``来实现继承
+
+```js
+// bad
+const inherits = require('inherits');
+function PeekableQueue(contents) {
+
+  Queue.apply(this, contents);
+
+}
+inherits(PeekableQueue, Queue);
+PeekableQueue.prototype.peek = function() {
+
+  return this._queue[0];
+
+}
+
+// good
+class PeekableQueue extends Queue {
+
+  peek() {
+
+    return this._queue[0];
+
+  }
+
+}
+```
+
+9.3 方法可以返回this来帮助方法链
+
+```js
+// bad
+Jedi.prototype.jump = function() {
+
+  this.jumping = true;
+  return true;
+
+};
+
+Jedi.prototype.setHeight = function(height) {
+
+  this.height = height;
+
+};
+
+const luke = new Jedi();
+luke.jump(); // => true
+luke.setHeight(20); // => undefined
+
+// good
+class Jedi {
+
+  jump() {
+
+    this.jumping = true;
+    return this;
+
+  }
+
+  setHeight(height) {
+
+    this.height = height;
+    return this;
+
+  }
+
+}
+
+const luke = new Jedi();
+
+luke.jump()
+  .setHeight(20);
+```
+
+9.4 自定义toString()方法是可以的，只需要确保它正常工作，不会造成负面影响
+
+```js
+class Jedi {
+
+  contructor(options = {}) {
+
+    this.name = options.name || 'no name';
+
+  }
+
+  getName() {
+
+    return this.name;
+
+  }
+
+  toString() {
+
+    return `Jedi - ${this.getName()}`;
+
+  }
+
+}
+```
+
+## 10.模块
+
+- 10.1 在非标准模块系统中使用模块(import/export)
+
+```js
+// bad
+const AirbnbStyleGuide = require('./AirbnbStyleGuide');
+module.exports = AirbnbStyleGuide.es6;
+
+// ok
+import AirbnbStyleGuide from './AirbnbStyleGuide';
+export default AirbnbStyleGuide.es6;
+
+// best
+import { es6 } from './AirbnbStyleGuide';
+export default es6;
+```
+
+- 10.2 不要直接使用导入导出
+
+```js
+// bad
+// filename es6.js
+export { es6 as default } from './airbnbStyleGuide';
+
+// good
+// filename es6.js
+import { es6 } from './AirbnbStyleGuide';
+export default es6;
+```
+
+- 10.3 对具有类型定义的非ES6库使用TypeScript模块导入。检查[DefinitelyTyped](https://github.com/borisyankov/DefinitelyTyped)以获取可用的类型定义文件。
+
+```js
+// bad
+/// <reference path="lodash/lodash.d.ts" />
+var lodash = require('lodash')
+
+// good
+/// <reference path="lodash/lodash.d.ts" />
+import lodash = require('lodash')
+```
+
+- 10.4 模块导入顺序
+
+  - 具有类型定义的外部库
+
+  - 带有通配符导入的内部TS模块
+  - 没有通配符导入的内部TS模块
+  - 没有类型定义的外部库
+
+```js
+// bad
+/// <reference path="../typings/tsd.d.ts" />
+import * as Api from './api';
+import _ = require('lodash');
+var Distillery = require('distillery-js');
+import Partner from './partner';
+import * as Util from './util';
+import Q = require('Q');
+var request = require('request');
+import Customer from './customer';
+
+// good
+/// <reference path="../typings/tsd.d.ts" />
+import _ = require('lodash');
+import Q = require('Q');
+import * as Api from './api';
+import * as Util from './util';
+import Customer from './customer';
+import Partner from './partner';
+var Distillery = require('distillery-js');
+var request = require('request');
+```
+
+## 11.迭代器和生成器
+
+- 11.1 不要使用迭代器，使用更受欢迎的高阶函数如``map()``，``reduce()``，而不是``for-of``循环。
+
+```js
+const numbers = [1, 2, 3, 4, 5];
+
+// bad
+let sum = 0;
+for (let num of numbers) {
+
+  sum += num;
+
+}
+
+sum === 15;
+
+// good
+let sum = 0;
+numbers.forEach((num) => sum += num);
+sum === 15;
+
+// best (use the functional force)
+const sum = numbers.reduce((total, num) => total + num, 0);
+sum === 15;
+```
+
+## 12.属性
+
+- 12.1 访问属性使用点表示法
+
+```js
+const luke = {
+  jedi: true,
+  age: 28,
+};
+
+// bad
+const isJedi = luke['jedi'];
+
+// good
+const isJedi = luke.jedi;
+```
+
+- 12.2 使用变量访问属性时使用下标表示法
+
+```js
+const luke = {
+  jedi: true,
+  age: 28,
+};
+
+const getProp = function(prop) {
+
+  return luke[prop];
+
+}
+
+const isJedi = getProp('jedi');
+```
+
+## 13.变量
+
+- 13.1 始终使用``const``用于声明变量。不这样做会赋值到全局变量上。我们希望避免污染全局命名空间。
+
+```js
+// bad
+superPower = new SuperPower();
+
+// good
+const superPower = new SuperPower();
+```
+
+- 13.2 每个变量使用一个const来声明
+
+> 通过这种方式你不必担心``;``和``,``
+
+```js
+// bad
+const items = getItems(),
+    goSportsTeam = true,
+    dragonball = 'z';
+
+// bad
+// (compare to above, and try to spot the mistake)
+const items = getItems(),
+    goSportsTeam = true;
+    dragonball = 'z';
+
+// good
+const items = getItems();
+const goSportsTeam = true;
+const dragonball = 'z';
+```
+
+- 13.3 将const和let分组声明
+
+```js
+// bad
+let i, len, dragonball,
+    items = getItems(),
+    goSportsTeam = true;
+
+// bad
+let i;
+const items = getItems();
+let dragonball;
+const goSportsTeam = true;
+let len;
+
+// good
+const goSportsTeam = true;
+const items = getItems();
+let dragonball;
+let i;
+let length;
+```
+
+- 13.4 在需要的地方定义变量，当时要放置在正确的位置
+
+> ``let``和``const``是块作用域而不是函数作用域
+
+```js
+// good
+function() {
+
+  test();
+  console.log('doing stuff..');
+
+  //..other stuff..
+
+  const name = getName();
+
+  if (name === 'test') {
+
+    return false;
+
+  }
+
+  return name;
+
+}
+
+// bad - unnessary function call
+function(hasName) {
+
+  const name = getName();
+
+  if (!hasName) {
+
+    return false;
+
+  }
+
+  this.setFirstName(name);
+
+  return true;
+
+}
+
+// good
+function(hasName) {
+
+  if (!hasName) {
+
+    return false;
+
+  }
+
+  const name = getName();
+  this.setFirstName(name);
+
+  return true;
+
+}
+```
+
+## 14.提升
+
+- 14.1 ``var``声明的变量会提升到范围的顶部，``const``和``let``不会提升
+
+```js
+// we know this wouldn't work (assuming there
+// is no notDefined global variable)
+function example() {
+
+  console.log(notDefined); // => throws a ReferenceError
+
+}
+
+// creating a variable declaration after you
+// reference the variable will work due to
+// variable hoisting. Note: the assignment
+// value of `true` is not hoisted.
+function example() {
+
+  console.log(declaredButNotAssigned); // => undefined
+  var declaredButNotAssigned = true;
+
+}
+
+// The interpreter is hoisting the variable
+// declaration to the top of the scope,
+// which means our example could be rewritten as:
+function example() {
+
+  let declaredButNotAssigned;
+  console.log(declaredButNotAssigned); // => undefined
+  declaredButNotAssigned = true;
+
+}
+
+// using const and let
+function example() {
+
+  console.log(declaredButNotAssigned); // => throws a ReferenceError
+  console.log(typeof declaredButNotAssigned); // => throws a ReferenceError
+  const declaredButNotAssigned = true;
+
+}
+```
+
+- 14.2 匿名函数表达式会提升其变量名，但不提升函数赋值
+
+```js
+function example() {
+
+  console.log(anonymous); // => undefined
+
+  anonymous(); // => TypeError anonymous is not a function
+
+  var anonymous = function() {
+
+    console.log('anonymous function expression');
+
+  };
+
+}
+```
+
+- 14.3 命名函数表达式提升变量名称，而不是函数名称或函数体。
+
+```js
+function example() {
+
+  console.log(named); // => undefined
+
+  named(); // => TypeError named is not a function
+
+  superPower(); // => ReferenceError superPower is not defined
+
+  var named = function superPower() {
+
+    console.log('Flying');
+
+  };
+
+}
+
+// the same is true when the function name
+// is the same as the variable name.
+function example() {
+
+  console.log(named); // => undefined
+
+  named(); // => TypeError named is not a function
+
+  var named = function named() {
+
+    console.log('named');
+
+  }
+
+}
+```
+
+- 14.4 函数声明提升了它们的名称和函数体。
+
+```js
+function  example（）{
+
+  superPower（）; // =>飞行
+
+  function  superPower（）{
+
+    控制台。log（' Flying '）;
+
+  }
+
+}
+```
+
+## 15.比较运算符和相等
+
+- 15.1 使用``===``和``!==``而不是``==``和``!=``
+
+- 15.2 条件语句（如if语句）使用toboolean抽象方法强制计算其表达式，并始终遵循以下简单规则：
+
+  - **Objects** evaluate to **true**
+  - **Undefined** evaluates to **false**
+  - **Null** evaluates to **false**
+  - **Booleans** evaluate to **the value of the boolean**
+  - **Numbers** evaluate to **false** if **+0, -0, or NaN**, otherwise **true**
+  - **Strings** evaluate to **false** if an empty string `''`, otherwise **true**
+
+  ```js
+  if ([0]) {
+    // true
+    // An array is an object, objects evaluate to true
+  }
   ```
+
+- 15.3 使用快捷方式
+
+  ```js
+  // bad
+  if (name !== '') {
+    // ...stuff...
+  }
   
-  - [28.2](#28.2) <a name='28.2'></a> Export one main module per file so it can be required by other files.
+  // good
+  if (name) {
+    // ...stuff...
+  }
+  
+  // bad
+  if (collection.length > 0) {
+    // ...stuff...
+  }
+  
+  // good
+  if (collection.length) {
+    // ...stuff...
+  }
+  ```
 
-  ```javascript
-  module Automobile {
+## 16.块
 
-    // hidden module, will not be accessible via "require"
-    Honda {
+- 16.1 多行时使用大括号或者换行
 
+  ```js
+  // bad
+  if (test) return false;
+  
+  // ok
+  if (test)
+    return false;
+  
+  // good
+  if (test) {
+  
+    return false;
+  
+  }
+  
+  // bad
+  function() { return false; }
+  
+  // good
+  function() {
+  
+    return false;
+  
+  }
+  ```
+
+- 16.2 如果你使用的是多行块，``if``块的右大括号与``else``放在同一行 。
+
+  ```js
+  // bad
+  if (test) {
+    thing1();
+    thing2();
+  }
+  else {
+    thing3();
+  }
+  
+  // good
+  if (test) {
+    thing1();
+    thing2();
+  } else {
+    thing3();
+  }
+  ```
+
+- 16.3 如果您使用多行块与`if`和`else`，不要省略花括号。
+
+  ```js
+  // bad
+  if (test)
+    thing1();
+    thing2();
+  else
+    thing3();
+  
+  // good
+  if (test) {
+    thing1();
+    thing2();
+  } else {
+    thing3();
+  }
+  ```
+
+## 17.注释
+
+- 17.1 使用`/** ... */`多行注释。包括描述，指定所有参数的类型和值以及返回值。
+
+  ```js
+  // bad
+  // make() returns a new element
+  // based on the passed in tag name
+  //
+  // @param {String} tag
+  // @return {Element} element
+  const make = function(tag) {
+  
+    // ...stuff...
+  
+    return element;
+  
+  }
+  
+  // good
+  /**
+   * make() returns a new element
+   * based on the passed in tag name
+   *
+   * @param {String} tag
+   * @return {Element} element
+   */
+  const make = function(tag) {
+  
+    // ...stuff...
+  
+    return element;
+  
+  }
+  ```
+
+- 17.2 使用`//`单行注释。将单行注释放在注释主题上方的换行符上。在评论前面加一个空行。
+
+  ```js
+  // bad
+  const active = true;  // is current tab
+  
+  // good
+  // is current tab
+  const active = true;
+  
+  // bad
+  const getType = function() {
+  
+    console.log('fetching type...');
+    // set the default type to 'no type'
+    const type = this._type || 'no type';
+  
+    return type;
+  
+  }
+  
+  // good
+  const getType = function() {
+  
+    console.log('fetching type...');
+  
+    // set the default type to 'no type'
+    const type = this._type || 'no type';
+  
+    return type;
+  
+  }
+  ```
+
+- 17.3 使用`// FIXME:`注释的问题。
+
+  ```js
+  class Calculator {
+  
+    constructor() {
+      // FIXME: shouldn't use a global here
+      total = 0;
     }
   
-    // public module, will be accessible via "require"
-    export Ford {
+  }
+  ```
 
-      export function vroom() {
+- 17.4 使用`// TODO:`注释解决问题的办法。
 
-        console.log('vroom!');
+  ```js
+  class Calculator {
+  
+    constructor() {
+      // TODO: total should be configurable by an options param
+      this.total = 0;
+    }
+  
+  }
+  ```
 
+## 18.空格
+
+- 18.1 使用软标签设置为2个空格。就是函数体内的代码缩进两个空格
+
+  ```js
+  // bad
+  function() {
+  
+  ∙∙∙∙const name;
+  
+  }
+  
+  // bad
+  function() {
+  
+  ∙const name;
+  
+  }
+  
+  // good
+  function() {
+  
+  ∙∙const name;
+  
+  }
+  ```
+
+- 18.2 在主支撑前留出1个空间。
+
+  ```js
+  // bad
+  const test = function(){
+  
+    console.log('test');
+  
+  }
+  
+  // good
+  const test = function() {
+  
+    console.log('test');
+  
+  }
+  
+  // bad
+  dog.set('attr',{
+    age: '1 year',
+    breed: 'Bernese Mountain Dog',
+  });
+  
+  // good
+  dog.set('attr', {
+    age: '1 year',
+    breed: 'Bernese Mountain Dog',
+  });
+  ```
+
+- 18.3 在控制语句（左括号之前放置1个空间`if`，`while`等等）。在函数调用和声明中的参数列表之前不放置空格。
+
+  ```js
+  // bad
+  if(isJedi) {
+  
+    fight ();
+  
+  }
+  
+  // good
+  if (isJedi) {
+  
+    fight();
+  
+  }
+  
+  // bad
+  const fight = function () {
+  
+    console.log ('Swooosh!');
+  
+  }
+  
+  // good
+  const fight = function() {
+  
+    console.log('Swooosh!');
+  
+  }
+  ```
+
+- 18.4 用空格设置运算符。
+
+  ```js
+  // bad
+  const x=y+5;
+  
+  // good
+  const x = y + 5;
+  ```
+
+- 18.5 使用单个换行符结束文件。
+
+  ```js
+  // bad
+  (function(global) {
+    // ...stuff...
+  })(this);
+  ```
+
+  ```js
+  // bad
+  (function(global) {
+    // ...stuff...
+  })(this);↵
+  ↵
+  ```
+
+  ```js
+  // good
+  (function(global) {
+    // ...stuff...
+  })(this);↵
+  ```
+
+- 18.6 编写长方法链时使用缩进。使用前导点，强调该行是方法调用，而不是新语句。
+
+  ```js
+  // bad
+  $('#items').find('.selected').highlight().end().find('.open').updateCount();
+  
+  // bad
+  $('#items').
+    find('.selected').
+      highlight().
+      end().
+    find('.open').
+      updateCount();
+  
+  // good
+  $('#items')
+    .find('.selected')
+      .highlight()
+      .end()
+    .find('.open')
+      .updateCount();
+  
+  // bad
+  const leds = stage.selectAll('.led').data(data).enter().append('svg:svg').class('led', true)
+      .attr('width', (radius + margin) * 2).append('svg:g')
+      .attr('transform', 'translate(' + (radius + margin) + ',' + (radius + margin) + ')')
+      .call(tron.led);
+  
+  // good
+  const leds = stage.selectAll('.led')
+      .data(data)
+    .enter().append('svg:svg')
+      .classed('led', true)
+      .attr('width', (radius + margin) * 2)
+    .append('svg:g')
+      .attr('transform', 'translate(' + (radius + margin) + ',' + (radius + margin) + ')')
+      .call(tron.led);
+  ```
+
+- 18.7 在块打开之后和块关闭之前留空行
+
+  ```js
+  // bad
+  if (foo) {
+    return bar;
+  }
+  
+  // good
+  if (foo) {
+  
+    return bar;
+  
+  }
+  
+  // bad
+  const baz = function(foo) {
+    return bar;
+  }
+  
+  // good
+  const baz = function(foo) {
+  
+    return bar;
+  
+  }
+  ```
+
+- 18.8 在块之后和下一个语句之前留空行。
+
+  ```js
+  // bad
+  if (foo) {
+  
+    return bar;
+  
+  }
+  return baz;
+  
+  // good
+  if (foo) {
+  
+    return bar;
+  
+  }
+  
+  return baz;
+  
+  // bad
+  const obj = {
+    foo() {
+    },
+    bar() {
+    },
+  };
+  return obj;
+  
+  // good
+  const obj = {
+    foo() {
+    },
+  
+    bar() {
+    },
+  };
+  
+  return obj;
+  ```
+
+## 19.逗号
+
+- 19.1 不要使用前置逗号
+
+  ```js
+  // bad
+  const story = [
+      once
+    , upon
+    , aTime
+  ];
+  
+  // good
+  const story = [
+    once,
+    upon,
+    aTime,
+  ];
+  
+  // bad
+  const hero = {
+      firstName: 'Ada'
+    , lastName: 'Lovelace'
+    , birthYear: 1815
+    , superPower: 'computers'
+  };
+  
+  // good
+  const hero = {
+    firstName: 'Ada',
+    lastName: 'Lovelace',
+    birthYear: 1815,
+    superPower: 'computers',
+  };
+  ```
+
+- 19.2 额外的尾随逗号
+
+  > 这导致更清洁的git差异。此外，像Babel这样的转换器将删除已转换代码中的附加尾部逗号，这意味着您不必担心旧版浏览器中的[尾随逗号问题](https://github.com/excelmicro/typescript/blob/master/es5/README.md#commas)。
+
+  ```js
+  // bad - git diff without trailing comma
+  const hero = {
+       firstName: 'Florence',
+  -    lastName: 'Nightingale'
+  +    lastName: 'Nightingale',
+  +    inventorOf: ['coxcomb graph', 'mordern nursing']
+  }
+  
+  // good - git diff with trailing comma
+  const hero = {
+       firstName: 'Florence',
+       lastName: 'Nightingale',
+  +    inventorOf: ['coxcomb chart', 'mordern nursing'],
+  }
+  
+  // bad
+  const hero = {
+    firstName: 'Dana',
+    lastName: 'Scully'
+  };
+  
+  const heroes = [
+    'Batman',
+    'Superman'
+  ];
+  
+  // good
+  const hero = {
+    firstName: 'Dana',
+    lastName: 'Scully',
+  };
+  
+  const heroes = [
+    'Batman',
+    'Superman',
+  ];
+  ```
+
+## 20.分号
+
+- 20.1 加分号
+
+  ```js
+  // bad
+  (function() {
+  
+    const name = 'Skywalker'
+    return name
+  
+  })()
+  
+  // good
+  (() => {
+  
+    const name = 'Skywalker';
+    return name;
+  
+  })();
+  
+  // good (guards against the function becoming an argument when two files with IIFEs are concatenated)
+  ;(() => {
+  
+    const name = 'Skywalker';
+    return name;
+  
+  })();
+  ```
+
+## 21.类型强制转换
+
+- 21.1 在语句的开头进行类型强转
+
+- 21.2 字符串：
+
+  ```js
+  //  => this.reviewScore = 9;
+  
+  // bad
+  const totalScore = this.reviewScore + '';
+  
+  // good
+  const totalScore = String(this.reviewScore);
+  ```
+
+- 21.3 数字转换使用`Number`和`parseInt`。
+
+  ```js
+  const inputValue = '4';
+  
+  // bad
+  const val = new Number(inputValue);
+  
+  // bad
+  const val = +inputValue;
+  
+  // bad
+  const val = inputValue >> 0;
+  
+  // bad
+  const val = parseInt(inputValue);
+  
+  // good
+  const val = Number(inputValue);
+  
+  // good
+  const val = parseInt(inputValue, 10);
+  ```
+
+- 21.4 布尔
+
+  ```js
+  const age = 0;
+  
+  // bad
+  const hasAge = new Boolean(age);
+  
+  // good
+  const hasAge = Boolean(age);
+  
+  // good
+  const hasAge = !!age;
+  ```
+
+## 22.命名约定
+
+- 22.1 避免单个字母名称。用你的命名描述。
+
+  ```js
+  // bad
+  function q() {
+    // ...stuff...
+  }
+  
+  // good
+  function query() {
+    // ..stuff..
+  }
+  ```
+
+- 22.2在命名对象，函数和实例时使用小驼峰
+
+  ```js
+  // bad
+  const OBJEcttsssss = {};
+  const this_is_my_object = {};
+  const c = function() {}
+  
+  // good
+  const thisIsMyObject = {};
+  const thisIsMyFunction = function() {}
+  ```
+
+- 22. 3在命名构造函数，类，模块或接口时使用大驼峰。
+
+  ```js
+  // bad
+  function user(options) {
+  
+    this.name = options.name;
+  
+  }
+  
+  const bad = new user({
+    name: 'nope',
+  });
+  
+  // good
+  module AperatureScience {
+  
+    class User {
+  
+      constructor(options) {
+  
+        this.name = options.name;
+  
       }
-
+  
     }
-
+  
   }
-
-  export default Automobile;
+  
+  const good = new AperatureScience.User({
+    name: 'yup',
+  });
   ```
 
-- [28.3](#28.3) <a name='28.3'></a> Order your code (alphabetically) in the following order within each module:
-   - var
-   - export var
-   - let
-   - export let
-   - const
-   - export const
-   - interface
-   - export interface
-   - function
-   - export function
-   - class
-   - export class
-   - module
-   - export module
+- 22. 4命名对象属性时使用下划线。
 
-**[⬆ back to top](#table-of-contents)**
+  ```js
+  // bad
+  const panda = {
+    firstName: 'Mr.',
+    LastName: 'Panda'
+  }
+  
+  // good
+  const panda = {
+    first_name: 'Mr.',
+    Last_name: 'Panda'
+  }
+  ```
 
+- 22. 5在命名私有属性时使用前导下划线`_`。
 
-## ECMAScript 5 Compatibility
+  ```js
+  // bad
+  this.__firstName__ = 'Panda';
+  this.firstName_ = 'Panda';
+  
+  // good
+  this._firstName = 'Panda';
+  ```
 
-  - [29.1](#29.1) <a name='29.1'></a> Refer to [Kangax](https://twitter.com/kangax/)'s ES5 [compatibility table](http://kangax.github.com/es5-compat-table/).
+- 22. 6不要保存引用`this`。使用箭头函数或方法`bind`。
 
-**[⬆ back to top](#table-of-contents)**
+  ```js
+  // bad
+  function foo() {
+  
+    const self = this;
+    return function() {
+  
+      console.log(self);
+  
+    };
+  
+  }
+  
+  // bad
+  function foo() {
+  
+    const that = this;
+    return function() {
+  
+      console.log(that);
+  
+    };
+  
+  }
+  
+  // good
+  function foo() {
+  
+    return () => {
+      console.log(this);
+    };
+  
+  }
+  ```
 
-## ECMAScript 6 Styles
+- 22.7 如果您的文件导出单个类，则您的文件名应该是该类的名称。
 
-  - [30.1](#30.1) <a name='30.1'></a> This is a collection of links to the various es6 features.
+  ```js
+  // file contents
+  class CheckBox {
+    // ...
+  }
+  export default CheckBox;
+  
+  // in some other file
+  // bad
+  import CheckBox from './checkBox';
+  
+  // bad
+  import CheckBox from './check_box';
+  
+  // good
+  import CheckBox from './CheckBox';
+  ```
 
-1. [Arrow Functions](#arrow-functions)
-1. [Classes](#constructors)
-1. [Object Shorthand](#es6-object-shorthand)
-1. [Object Concise](#es6-object-concise)
-1. [Object Computed Properties](#es6-computed-properties)
-1. [Template Strings](#es6-template-literals)
-1. [Destructuring](#destructuring)
-1. [Default Parameters](#es6-default-parameters)
-1. [Rest](#es6-rest)
-1. [Array Spreads](#es6-array-spreads)
-1. [Let and Const](#references)
-1. [Iterators and Generators](#iterators-and-generators)
-1. [Modules](#modules)
+- 22.8 当默认导出是个函数时使用小驼峰。您的文件名应与您的函数名称相同。
 
-**[⬆ back to top](#table-of-contents)**
+  ```js
+  function makeStyleGuide() {
+  }
+  
+  export default makeStyleGuide;
+  ```
 
-## Typescript 1.5 Styles
+- 22.9 导出单例/函数库/纯对象时使用大驼峰。
 
-  - [31.1](#31.1) <a name='31.1'></a> This is a collection of links to the various es6 features.
+  ```js
+  const AirbnbStyleGuide = {
+    es6: {
+    }
+  };
+  
+  export default AirbnbStyleGuide;
+  ```
 
-1. [Type Annotations](#ts-type-annotations)
-1. [Interfaces](#ts-interfaces)
-1. [Classes](#ts-classes)
-1. [Modules](#ts-modules)
-1. [Generics](#ts-generics)
+## 23.访问器
 
-**[⬆ back to top](#table-of-contents)**
+- 23.1 不要使用属性来访问函数
 
-## License
+- 23.2 如果你使用了访问器函数，请使用getVal()和setVal('hello')。
 
-(The MIT License)
+  ```js
+  // bad
+  dragon.age();
+  
+  // good
+  dragon.getAge();
+  
+  // bad
+  dragon.age(25);
+  
+  // good
+  dragon.setAge(25);
+  ```
 
-Copyright (c) 2014 Airbnb
+- 23.3 如果时布尔值，请使用`isVal()`和`hasVal()`。
 
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software and associated documentation files (the
-'Software'), to deal in the Software without restriction, including
-without limitation the rights to use, copy, modify, merge, publish,
-distribute, sublicense, and/or sell copies of the Software, and to
-permit persons to whom the Software is furnished to do so, subject to
-the following conditions:
+  ```js
+  // bad
+  if (!dragon.age()) {
+    return false;
+  }
+  
+  // good
+  if (!dragon.hasAge()) {
+    return false;
+  }
+  ```
 
-The above copyright notice and this permission notice shall be
-included in all copies or substantial portions of the Software.
+- 23.4创建`get()`和`set()`函数是可以的，但要保持一致。
 
-THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
-EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
-IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
-TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-**[⬆ back to top](#table-of-contents)**
+  ```js
+  class Jedi {
+  
+    constructor(options = {}) {
+  
+      const lightsaber = options.lightsaber || 'blue';
+      this.set('lightsaber', lightsaber);
+  
+    }
+  
+    set(key, val) {
+  
+      this[key] = val;
+  
+    }
+  
+    get(key) {
+  
+      return this[key];
+  
+    }
+  
+  }
+  ```
